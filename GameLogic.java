@@ -53,15 +53,23 @@ public class GameLogic implements ChessGame {
     // repetition
   }
   
-  PlayerStatus getPlayerStatus(Player player) {
-    if (getSpecificPiecesOfPlayer(player, King.class))
+  PlayerStatus getPlayerStatus(Color player) {
+    // if (getSpecificPiecesOfPlayer(player, King.class))
   }
   
-  Piece[] getSpecificPiecesOfPlayer(Player player, Class<?> pieceClass) {
-                                                     
+  List<Piece> getSpecificPiecesOfPlayer(Color player, Class<?> pieceClass) {
+    List<Piece> pieces = getSpecificPieces(pieceClass);
+    List<Piece> piecesOfPlayer = new List<Piece>();
+    for (piece : pieces) {
+      if (piece.getColor() == player) {
+        piecesOfPlayer.add(piece);
+      }
+    }
+
+    return piecesOfPlayer;
   }
   
-  Piece[] getSpecificPieces(Class<?> pieceClass) {
+  List<Piece> getSpecificPieces(Class<?> pieceClass) {
     List<Piece> pieces = new List<Piece>();
     for (row : board) {
       for (square : row) {
@@ -114,10 +122,20 @@ public class Square {
   
 public class Piece {
   Location position;
+  Color color;
   
-  public Piece(Location position) {
+  public Piece(Location position, Color, color) {
     this.position = position;
-  }   
+    this.color = color;
+  }
+
+  public Location getPos() {
+    return Location;
+  }
+
+  public Color getColor() {
+    return color;
+  }
   
   public Location[] getValidMoves(Square[][] board) {
     
