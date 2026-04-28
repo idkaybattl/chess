@@ -5,7 +5,7 @@ public enum GameStatus {
   BLACK,
 }
 
-public enum Player {
+public enum Colors {
   BLACK,
   WHITE,
 }
