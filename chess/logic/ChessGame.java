@@ -1,4 +1,6 @@
-import types.*;
+package logic;
+import logic.*;
+
 interface ChessGame {
   Location[] availableMoves(Piece piece);
   boolean movePiece(Piece piece, int x, int y);

@@ -1,10 +1,12 @@
+package ui;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.JFrame;
 import javax.swing.JButton;
-import Types.*;
+import logic.*;
 
 public class UI extends JFrame {
   ChessGame logic;

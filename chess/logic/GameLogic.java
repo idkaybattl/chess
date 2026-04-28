@@ -1,5 +1,8 @@
+package logic;
+
 import java.util.Optional;
-import Types.*;
+import logic.*;
+
 public class GameLogic implements ChessGame {
   Square[][] board;
   Player currentPlayer;
