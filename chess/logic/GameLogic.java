@@ -1,15 +1,19 @@
 package logic;
-
-import java.util.Optional;
 import logic.*;
 
 public class GameLogic implements ChessGame {
-  Square[][] board;
+  Player white;
+  Player black;
+
   Player currentPlayer;
+
+  Square[][] board;  
   
   public GameLogic() {
+    white = new Player(WHITE);
+    black = new Player(BLACK);
     board = new Square[8][8];
-    currentPlayer = WHITE;
+    currentPlayer = white;
     
     for (row : board) {
       for (square : row) {
@@ -39,7 +43,7 @@ public class GameLogic implements ChessGame {
       piece.move(target);
       board[target.x][target.y].setPiece(piece);
     
-      currentPlayer = (currentPlayer == WHITE) ? BLACK : WHITE;
+      currentPlayer = (currentPlayer == white) ? black : white;
       return true;
     } else {
       return false;
@@ -47,20 +51,45 @@ public class GameLogic implements ChessGame {
   }
   
   public GameStatus getGameStatus() {
-    PlayerStatus whiteStatus = getGameStatus(WHITE);
-    PlayerStatus blackStatus = getGameStatus(BLACK);
+    PlayerStatus whiteStatus = white.getStatus();
+    PlayerStatus blackStatus = black.getStatus();
     
     // Check for draws:
     // insufficient material
     // 50 moves
     // repetition
   }
-  
-  PlayerStatus getPlayerStatus(Color player) {
-    // if (getSpecificPiecesOfPlayer(player, King.class))
+
+  private List<Piece> getPiecesOfPlayer(Color player) {
+    List<Piece> pieces = new List<Piece>();
+    
+    for (row : board) {
+      for (square : row) {
+        if (square.getPiece.isPresent()) {
+          Piece piece = square.get();
+          if (piece.getColor == player) {
+            pieces.add(piece);
+          }
+        }
+      }
+    }
+
+    return pieces;
+  }
+
+  private boolean inCheck(Color player) {
+    
   }
   
-  List<Piece> getSpecificPiecesOfPlayer(Color player, Class<?> pieceClass) {
+  private PlayerStatus getPlayerStatus(Color player) {
+    if (getSpecificPiecesOfPlayer(player, King.class).availableMoves.length == 0) {
+      
+    } else {
+      return ONGOING;
+    }
+  }
+  
+  private List<Piece> getSpecificPiecesOfPlayer(Color player, Class<?> pieceClass) {
     List<Piece> pieces = getSpecificPieces(pieceClass);
     List<Piece> piecesOfPlayer = new List<Piece>();
     for (piece : pieces) {
@@ -72,7 +101,7 @@ public class GameLogic implements ChessGame {
     return piecesOfPlayer;
   }
   
-  List<Piece> getSpecificPieces(Class<?> pieceClass) {
+  private List<Piece> getSpecificPieces(Class<?> pieceClass) {
     List<Piece> pieces = new List<Piece>();
     for (row : board) {
       for (square : row) {
@@ -100,62 +129,6 @@ public class GameLogic implements ChessGame {
   }
 }
 
-public class Square {
-  Piece piece;
-  
-  public Square() {
-  }
-  
-  public void setPiece(Piece piece) {
-    this.piece = piece;
-  }
-  
-  public void removePiece() {
-    this.piece = null;
-  }
-  
-  public Optional<Piece> getPiece() {
-    if (piece == null) {
-      return Optional.empty();
-    } else {
-      return Optional.of(this.piece);
-    }
-  }
-}
-  
-public class Piece {
-  Location position;
-  Color color;
-  
-  public Piece(Location position, Color, color) {
-    this.position = position;
-    this.color = color;
-  }
 
-  public Location getPos() {
-    return Location;
-  }
-
-  public Color getColor() {
-    return color;
-  }
-  
-  public Location[] getValidMoves(Square[][] board) {
-    
-  }
-  
-  public void move(Location target) {
-    this.position = target;
-  }
-}
-  
-public class Location {
-  int x;
-  int y;
-  public Location(int x, int y) {
-    self.x = x;
-    self.y = y;
-  }
-}
 
     
