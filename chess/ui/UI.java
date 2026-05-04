@@ -1,20 +1,18 @@
-package ui;
-
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.JFrame;
 import javax.swing.JButton;
-import logic.*;
+//import types.*;
 
 public class UI extends JFrame {
-  ChessGame logic;
+  //ChessGame logic;
   
-  private JButton[][] squares;
+  private JButton[][] squares = new JButton[8][8];
   
   public UI() {
-    logic = new GameLogic();     
+    //logic = new GameLogic();     
     
     super();
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -33,22 +31,38 @@ public class UI extends JFrame {
     squares = new JButton[8][8];
     
     for (int i = 0; i < 8; i++) {
-      for (int j = 0; j < 8; i++) {
+      for (int j = 0; j < 8; j++) {
         squares[i][j] = new JButton();
-        squares[i][j].setBounds(i * frameWidth / 8, j * frameHeight / 8, frameWidth / 8, frameHeight / 8);
-         jButton1.addActionListener(new ActionListener() { 
+        squares[i][j].setBounds(i * frameWidth / 8, frameHeight - (j + 1) * frameHeight / 8, frameWidth / 8, frameHeight / 8);
+        squares[i][j].addActionListener(new ActionListener() { 
           public void actionPerformed(ActionEvent evt) { 
             squareClicked(evt);
           }
-         });
+        });
+        
+        if ( (i+j) % 2 == 0) {
+          squares[i][j].setBackground(new Color(0x7A6543));
+        }
+        cp.add(squares[i][j]);
       } 
     }
     
-    updateBoard(); 
+    setVisible(true);
+    
+   //updateBoard(); 
   }
   
-  private void updateBoard() {
-    logic.getBoard(); 
+  public static void main(String[] args) {
+    new UI();
   }
+  
+  private void squareClicked(ActionEvent evt) {
+  }
+  
+  //private void updateBoard() {
+    //logic.getBoard(); 
+  //}
 }
+
+
 
