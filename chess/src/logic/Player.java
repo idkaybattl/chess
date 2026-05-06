@@ -2,14 +2,16 @@ package logic;
 
 import java.util.ArrayList;
 import logic.pieces.Piece;
+import logic.pieces.King;
 
 public class Player {
     private Color color;
     private Piece[] pieces;
-    private Piece king;
+    private King king;
 
     public Player(Color color) {
         this.color = color;
+        pieces = new Piece[16];
     }
 
     public Color getColor() {
@@ -26,6 +28,10 @@ public class Player {
     public boolean targetsEnemyKing() {
         // placeholder
         return false;
+    }
+
+    public King getKing() {
+        return king;
     }
 
     public ArrayList<Piece> getActivePieces() {
@@ -46,5 +52,15 @@ public class Player {
             }
         }
         return takenPieces;
+    }
+
+    public ArrayList<Piece> getActivePieces(Class<?> pieceClass) {
+        ArrayList<Piece> activePieces = new ArrayList<Piece>();
+        for (Piece piece : pieces) {
+            if (!piece.isTaken() && piece.getClass() == pieceClass) {
+                activePieces.add(piece);
+            }
+        }
+        return activePieces;
     }
 }

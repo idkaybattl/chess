@@ -31,29 +31,30 @@ public class GameLogic implements ChessGame {
         return piece.getValidMoves(board);
     }
 
-    public boolean movePiece(Piece piece, Location target) {
+    public MoveResult movePiece(Piece piece, Location target) {
         if (currentPlayer.getColor() == piece.getColor()) {
-            ArrayList<Location> availableMoves = availableMoves(piece);
-            boolean allowedMove = false;
-            for (Location availableMove : availableMoves) {
-                if (availableMove == target) {
-                    allowedMove = true;
-                    break;
+            if (getGameStatus() == GameStatus.ONGOING) {
+                ArrayList<Location> availableMoves = availableMoves(piece);
+                boolean allowedMove = availableMoves.contains(target);
+
+                if (allowedMove) {
+                    board[piece.getPos().x][piece.getPos().y].removePiece();
+                    piece.move(target);
+                    board[target.x][target.y].setPiece(piece);
+
+                    currentPlayer = (currentPlayer == white) ? black : white;
+                    if (getGameStatus() != GameStatus.ONGOING) {
+                        return MoveResult.GAME_OVER;
+                    }
+                    return MoveResult.MOVED;
+                } else {
+                    return MoveResult.ILLEGAL_MOVE;
                 }
-            }
-
-            if (allowedMove) {
-                board[piece.getPos().x][piece.getPos().y].removePiece();
-                piece.move(target);
-                board[target.x][target.y].setPiece(piece);
-
-                currentPlayer = (currentPlayer == white) ? black : white;
-                return true;
             } else {
-                return false;
+                return MoveResult.GAME_OVER;
             }
         } else {
-            return false;
+            return MoveResult.NOT_YOUR_TURN;
         }
     }
 
@@ -67,6 +68,7 @@ public class GameLogic implements ChessGame {
         // repetition
 
         // placeholder
+        // TODO
         return GameStatus.ONGOING;
     }
 
@@ -83,18 +85,6 @@ public class GameLogic implements ChessGame {
         } else {
             return PlayerStatus.ONGOING;
         }
-    }
-
-    private ArrayList<Piece> getSpecificPiecesOfPlayer(Color player, Class<?> pieceClass) {
-        ArrayList<Piece> pieces = getSpecificPieces(pieceClass);
-        ArrayList<Piece> piecesOfPlayer = new ArrayList<Piece>();
-        for (Piece piece : pieces) {
-            if (piece.getColor() == player) {
-                piecesOfPlayer.add(piece);
-            }
-        }
-
-        return piecesOfPlayer;
     }
 
     private ArrayList<Piece> getSpecificPieces(Class<?> pieceClass) {

@@ -7,7 +7,7 @@ import logic.pieces.Piece;
 interface ChessGame {
     List<Location> availableMoves(Piece piece);
 
-    boolean movePiece(Piece piece, Location target);
+    MoveResult movePiece(Piece piece, Location target);
 
     GameStatus getGameStatus();
 

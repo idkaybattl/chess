@@ -18,10 +18,6 @@ public class Square {
     }
 
     public Optional<Piece> getPiece() {
-        if (piece == null) {
-            return Optional.empty();
-        } else {
-            return Optional.of(this.piece);
-        }
+        return Optional.ofNullable(this.piece);
     }
 }
