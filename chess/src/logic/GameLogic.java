@@ -29,6 +29,8 @@ public class GameLogic implements ChessGame {
 
     public ArrayList<Location> availableMoves(Piece piece) {
         return piece.getValidMoves(board);
+
+        // TODO, filter moves that lead to check out
     }
 
     public MoveResult movePiece(Piece piece, Location target) {
@@ -72,7 +74,7 @@ public class GameLogic implements ChessGame {
         return GameStatus.ONGOING;
     }
 
-    private boolean inCheck(Color player) {
+    private boolean inCheck(Player player) {
         return true;
     }
 

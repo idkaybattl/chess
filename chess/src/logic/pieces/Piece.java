@@ -26,7 +26,13 @@ public abstract class Piece {
         return taken;
     }
 
+    // only pseudo legal moves, filter moves that lead to check in GameLogic out
     public abstract ArrayList<Location> getValidMoves(Square[][] board);
+
+    // pawns attack the diagonal squares even if theres no piece there
+    // => attacked squares not always in list of valid moves
+    // matters for checking for checks
+    public abstract ArrayList<Location> getAttackedSquares(Square[][] board);
 
     public void move(Location target) {
         this.position = target;
