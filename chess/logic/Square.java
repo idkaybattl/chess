@@ -1,6 +1,7 @@
 package logic;
 
 import java.util.Optional;
+import logic.pieces.Piece;
 
 public class Square {
     Piece piece;

@@ -1,12 +1,12 @@
-package loigc;
+package logic.pieces;
 
-import logic.Location;
+import logic.*;
 import java.util.ArrayList;
 
 public abstract class Piece {
-    Location position;
-    Color color;
-    boolean taken;
+    private Location position;
+    private Color color;
+    private boolean taken;
 
     public Piece(Location position, Color color) {
         taken = true;
@@ -22,7 +22,11 @@ public abstract class Piece {
         return color;
     }
 
-    public abstract Location[] getValidMoves(Square[][] board);
+    public boolean isTaken() {
+        return taken;
+    }
+
+    public abstract ArrayList<Location> getValidMoves(Square[][] board);
 
     public void move(Location target) {
         this.position = target;
@@ -32,7 +36,6 @@ public abstract class Piece {
         taken = true;
     }
 
-
     public ArrayList<Square> rayCast(int x, int y, Square[][] board) {
         int newX = this.getPos().x + x;
         int newY = this.getPos().y + y;
@@ -41,14 +44,11 @@ public abstract class Piece {
 
         while (!board[newX][newY].getPiece().isPresent()) {
             squares.add(board[newX][newY]);
-            
+
             newX += x;
             newY += y;
         }
 
         return squares;
     }
-}   
-
-
-
+}

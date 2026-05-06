@@ -2,6 +2,7 @@ package logic;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import logic.pieces.Piece;
 
 public class GameLogic implements ChessGame {
     Player white;
@@ -26,27 +27,31 @@ public class GameLogic implements ChessGame {
         // TODO, add Piece setup
     }
 
-    public Location[] availableMoves(Piece piece) {
+    public ArrayList<Location> availableMoves(Piece piece) {
         return piece.getValidMoves(board);
     }
 
     public boolean movePiece(Piece piece, Location target) {
-        Location[] availableMoves = availableMoves(piece);
-        boolean allowedMove = false;
-        for (Location availableMove : availableMoves) {
-            if (availableMove == target) {
-                allowedMove = true;
-                break;
+        if (currentPlayer.getColor() == piece.getColor()) {
+            ArrayList<Location> availableMoves = availableMoves(piece);
+            boolean allowedMove = false;
+            for (Location availableMove : availableMoves) {
+                if (availableMove == target) {
+                    allowedMove = true;
+                    break;
+                }
             }
-        }
 
-        if (allowedMove) {
-            board[piece.position.x][piece.position.y].removePiece();
-            piece.move(target);
-            board[target.x][target.y].setPiece(piece);
+            if (allowedMove) {
+                board[piece.getPos().x][piece.getPos().y].removePiece();
+                piece.move(target);
+                board[target.x][target.y].setPiece(piece);
 
-            currentPlayer = (currentPlayer == white) ? black : white;
-            return true;
+                currentPlayer = (currentPlayer == white) ? black : white;
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }

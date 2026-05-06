@@ -1,6 +1,7 @@
 package logic;
 
 import java.util.ArrayList;
+import logic.pieces.Piece;
 
 public class Player {
     private Color color;
@@ -30,7 +31,7 @@ public class Player {
     public ArrayList<Piece> getActivePieces() {
         ArrayList<Piece> activePieces = new ArrayList<Piece>();
         for (Piece piece : pieces) {
-            if (!piece.taken) {
+            if (!piece.isTaken()) {
                 activePieces.add(piece);
             }
         }
@@ -40,7 +41,7 @@ public class Player {
     public ArrayList<Piece> getTakenPieces() {
         ArrayList<Piece> takenPieces = new ArrayList<Piece>();
         for (Piece piece : pieces) {
-            if (piece.taken) {
+            if (piece.isTaken()) {
                 takenPieces.add(piece);
             }
         }

@@ -1,9 +1,11 @@
 package logic;
 
 import java.util.Optional;
+import java.util.List;
+import logic.pieces.Piece;
 
 interface ChessGame {
-    Location[] availableMoves(Piece piece);
+    List<Location> availableMoves(Piece piece);
 
     boolean movePiece(Piece piece, Location target);
 
