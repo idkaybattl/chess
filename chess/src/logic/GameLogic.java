@@ -10,6 +10,8 @@ public class GameLogic implements ChessGame {
 
     Player currentPlayer;
 
+    ArrayList<Move> moveHistory;
+
     Square[][] board;
 
     public GameLogic() {
@@ -48,6 +50,9 @@ public class GameLogic implements ChessGame {
                     if (getGameStatus() != GameStatus.ONGOING) {
                         return MoveResult.GAME_OVER;
                     }
+
+                    moveHistory.add(new Move(piece.getPos(), target));
+
                     return MoveResult.MOVED;
                 } else {
                     return MoveResult.ILLEGAL_MOVE;

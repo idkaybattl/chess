@@ -8,4 +8,8 @@ public class Location {
         this.x = x;
         this.y = y;
     }
+
+    public String algebraicNotation() {
+        return (String.valueOf((char) (97 + x)) + String.valueOf(y + 1));
+    }
 }
