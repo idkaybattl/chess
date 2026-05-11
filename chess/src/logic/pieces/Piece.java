@@ -48,7 +48,7 @@ public abstract class Piece {
 
         ArrayList<Square> squares = new ArrayList<Square>();
 
-        while (!board[newX][newY].getPiece().isPresent()) {
+        while (!board[newX][newY].getPiece().isPresent() && x < 8 && y < 8) {
             squares.add(board[newX][newY]);
 
             newX += x;
@@ -57,4 +57,18 @@ public abstract class Piece {
 
         return squares;
     }
+
+    public ArrayList<Square> filteredRayCast(int x, int y, Square[][] board) {
+        ArrayList<Square> squares = rayCast( x, y, board);
+        
+        if(squares[squares.size() - 1].getPiece().isPresent()) {
+            if(squares[squares.size() - 1].getPiece().getColor() == color) {
+                squares.remove(squares.size() - 1);
+            }
+        }
+
+        return squares;
+        
+    }
+
 }
