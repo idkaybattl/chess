@@ -10,15 +10,12 @@ public class Bishop extends Piece {
 
     public ArrayList<Location> getValidMoves(Square[][] board) {
         ArrayList<Location> moves = new ArrayList<Location>();
-        ArrayList<Square> posSquares = rayCast(1, 1, board);
-        // check if last piece is same color
-        // if then remove
-        posSquares.addAll(rayCast(1, -1, board));
-
-        posSquares.addAll(rayCast(-1, 1, board));
-
-        posSquares.addAll(rayCast(-1, -1, board));
-
+        
+        moves.addAll(filteredRayCast(1, 1, board));
+        moves.addAll(filteredRayCast(1, -1, board));
+        moves.addAll(filteredRayCast(-1, 1, board));
+        moves.addAll(filteredRayCast(-1, -1, board));
+        
         return moves;
     }
 
