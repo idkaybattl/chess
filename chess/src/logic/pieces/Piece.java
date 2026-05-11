@@ -58,6 +58,15 @@ public abstract class Piece {
         return squares;
     }
 
+    public boolean filter(Square square){
+        if(square.getPiece().isPresent()) {
+            if(square.getPiece().getColor() == color) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     public ArrayList<Square> filteredRayCast(int x, int y, Square[][] board) {
         ArrayList<Square> squares = rayCast( x, y, board);
         
