@@ -63,6 +63,9 @@ public class Board {
     }
 
     public void movePiece(Piece piece, Location target) {
+        if (getPiece(target).isPresent()) {
+            getPiece(target).get().take();
+        }
         getSquare(piece.getPos()).removePiece();
         piece.move(target);
         getSquare(target).setPiece(piece);

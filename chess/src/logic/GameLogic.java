@@ -47,7 +47,7 @@ public class GameLogic implements ChessGame {
 
     public boolean anyMovesLeft(Player player) {
         for (Piece piece : player.getActivePieces()) {
-            if (availableMoves(piece).size() >= 0) {
+            if (availableMoves(piece).size() > 0) {
                 return true;
             }
         }
@@ -130,7 +130,7 @@ public class GameLogic implements ChessGame {
         // 50 moves
         // repetition
 
-        if (anyMovesLeft(white)) {
+        if (!anyMovesLeft(white)) {
             if (inCheck(white)) {
                 return GameStatus.BLACK;
             } else {
@@ -138,7 +138,7 @@ public class GameLogic implements ChessGame {
             }
         }
 
-        if (anyMovesLeft(black)) {
+        if (!anyMovesLeft(black)) {
             if (inCheck(black)) {
                 return GameStatus.WHITE;
             } else {

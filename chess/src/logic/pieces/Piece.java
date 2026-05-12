@@ -7,11 +7,13 @@ public abstract class Piece {
     private Location position;
     private Color color;
     private boolean taken;
+    private boolean hasMoved;
 
     public Piece(Location position, Color color) {
         this.taken = false;
         this.position = position;
         this.color = color;
+        hasMoved = false;
     }
 
     public Location getPos() {
@@ -26,6 +28,10 @@ public abstract class Piece {
         return taken;
     }
 
+    public boolean hasMoved() {
+        return hasMoved;
+    }
+
     // only pseudo legal moves, filter moves that lead to check in GameLogic out
     public abstract ArrayList<Location> getValidMoves(Board board);
 
@@ -38,6 +44,7 @@ public abstract class Piece {
 
     public void move(Location target) {
         this.position = target;
+        this.hasMoved = true;
     }
 
     public void take() {

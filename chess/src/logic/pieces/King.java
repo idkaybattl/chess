@@ -4,6 +4,7 @@ import logic.*;
 import java.util.ArrayList;
 
 public class King extends Piece {
+
     public King(Location position, Color color) {
         super(position, color);
     }
@@ -23,6 +24,8 @@ public class King extends Piece {
         }
 
         return moves;
+
+        // TODO: castling
     }
 
 }
