@@ -32,8 +32,8 @@ public abstract class Piece {
     // pawns attack the diagonal squares even if theres no piece there
     // => attacked squares not always in list of valid moves
     // matters for checking for checks
-    public abstract ArrayList<Location> getAttackedSquares(Square[][] board) {
-        return getValidMoves;
+    public ArrayList<Location> getAttackedSquares(Square[][] board) {
+        return getValidMoves(board);
     }
 
     public void move(Location target) {
@@ -60,32 +60,31 @@ public abstract class Piece {
         return squares;
     }
 
-    public boolean filter(Square square){
-        if(square.getPiece().isPresent()) {
-            if(square.getPiece().getColor() == color) {
+    public boolean filter(Square square) {
+        if (square.getPiece().isPresent()) {
+            if (square.getPiece().get().getColor() == color) {
                 return false;
             }
         }
         return true;
     }
-    
+
     public ArrayList<Square> filteredRayCast(int x, int y, Square[][] board) {
-        ArrayList<Square> squares = rayCast( x, y, board);
-        
-        if(squares[squares.size() - 1].getPiece().isPresent()) {
-            if(squares[squares.size() - 1].getPiece().getColor() == color) {
+        ArrayList<Square> squares = rayCast(x, y, board);
+
+        if (squares.get(squares.size() - 1).getPiece().isPresent()) {
+            if (squares.get(squares.size() - 1).getPiece().get().getColor() == color) {
                 squares.remove(squares.size() - 1);
             }
         }
 
         return squares;
-        
+
     }
 
-    public boolean inBoard(Location location) {   
-        return(location.x >= 0 && location.x < 8 && location.y >= 0 && location.y < 8);
-        
+    public boolean inBoard(Location location) {
+        return (location.x >= 0 && location.x < 8 && location.y >= 0 && location.y < 8);
+
     }
-    
 
 }

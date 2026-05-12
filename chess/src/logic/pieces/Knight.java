@@ -13,16 +13,16 @@ public class Knight extends Piece {
 
     public ArrayList<Location> getValidMoves(Square[][] board) {
         ArrayList<Location> moves = new ArrayList<Location>();
-        
-        for(i = 0; i < 8; i++) {
-            Location move = new Location(position.x + localMoves[i][0], position.y + localMoves[i][1]);
+
+        for (int i = 0; i < 8; i++) {
+            Location move = new Location(getPos().x + localMoves[i][0], getPos().y + localMoves[i][1]);
 
             if (filter(board[move.x][move.y]) && inBoard(move)) {
                 moves.add(move);
             }
-             
+
         }
-    
+
         return moves;
     }
 
