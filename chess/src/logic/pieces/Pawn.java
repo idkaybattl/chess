@@ -39,8 +39,6 @@ public class Pawn extends Piece {
             moves.add(sideMoves[1]);
         }
 
-        // TODO: en passant
-
         return moves;
     }
 

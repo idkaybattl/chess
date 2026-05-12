@@ -84,6 +84,16 @@ public class GameLogic implements ChessGame {
         return moves;
     }
 
+    private ArrayList<Location> allAttackedSquares(Player player) {
+        var attackedSquares = new ArrayList<Location>();
+
+        for (Piece piece : player.getActivePieces()) {
+            attackedSquares.addAll(piece.getAttackedSquares(board));
+        }
+
+        return attackedSquares;
+    }
+
     // move piece, check if game is finished and change player
     public MoveResult movePiece(Piece piece, Location target) {
         if (currentPlayer.getColor() == piece.getColor()) {
@@ -140,9 +150,16 @@ public class GameLogic implements ChessGame {
     }
 
     private boolean inCheck(Player player) {
-        // TODO
+        Player enemy = (player.getColor() == Color.WHITE) ? black : white;
+        ArrayList<Location> attackedLocations = allAttackedSquares(enemy);
 
-        return true;
+        for (Location attackedLocation : attackedLocations) {
+            if (getPieceAt(attackedLocation).isPresent() && getPieceAt(attackedLocation).get() == player.getKing()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public Optional<Piece> getPieceAt(Location location) {
