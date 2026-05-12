@@ -63,7 +63,23 @@ public class GameLogic implements ChessGame {
 
         Move lastMove = moveHistory.get(moveHistory.size() - 1);
 
-        // TODO: check for en passant
+        if (!(lastMove.getPiece() instanceof Pawn)) {
+            return moves;
+        }
+
+        Location start = lastMove.getStart();
+        Location target = lastMove.getTarget();
+        Location pawnPos = pawn.getPos();
+
+        boolean movedTwoSquares = Math.abs(target.y - start.y) == 2;
+        boolean endedBesidePawn = (target.y == pawnPos.y && Math.abs(target.x - pawnPos.x) == 1);
+
+        if (!movedTwoSquares || !endedBesidePawn) {
+            return moves;
+        }
+
+        int direction = pawn.getColor() == Color.WHITE ? 1 : -1;
+        moves.add(new Location(target.x, pawnPos.y + direction));
 
         return moves;
     }

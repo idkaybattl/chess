@@ -24,4 +24,8 @@ public class Move {
     public Location getTarget() {
         return target;
     }
+
+    public Piece getPiece() {
+        return piece;
+    }
 }
