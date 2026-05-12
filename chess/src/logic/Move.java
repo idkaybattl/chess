@@ -12,4 +12,12 @@ public class Move {
     public String algebraicNotation() {
         return (start.algebraicNotation() + target.algebraicNotation());
     }
+
+    public Location getStart() {
+        return start;
+    }
+
+    public Location getTarget() {
+        return target;
+    }
 }

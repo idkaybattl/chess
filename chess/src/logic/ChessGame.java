@@ -13,7 +13,7 @@ interface ChessGame {
 
     Optional<Piece> getPieceAt(Location location);
 
-    Square[][] getBoard();
+    Board getBoard();
 
     Player getCurrentPlayer();
 }

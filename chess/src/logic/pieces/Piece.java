@@ -27,12 +27,12 @@ public abstract class Piece {
     }
 
     // only pseudo legal moves, filter moves that lead to check in GameLogic out
-    public abstract ArrayList<Location> getValidMoves(Square[][] board);
+    public abstract ArrayList<Location> getValidMoves(Board board);
 
     // pawns attack the diagonal squares even if theres no piece there
     // => attacked squares not always in list of valid moves
     // matters for checking for checks
-    public ArrayList<Location> getAttackedSquares(Square[][] board) {
+    public ArrayList<Location> getAttackedSquares(Board board) {
         return getValidMoves(board);
     }
 
@@ -44,36 +44,36 @@ public abstract class Piece {
         taken = true;
     }
 
-    public ArrayList<Square> rayCast(int x, int y, Square[][] board) {
+    public ArrayList<Location> rayCast(int x, int y, Board board) {
         int newX = this.getPos().x + x;
         int newY = this.getPos().y + y;
 
-        ArrayList<Square> squares = new ArrayList<Square>();
+        var locations = new ArrayList<Location>();
 
-        while (!board[newX][newY].getPiece().isPresent() && x < 8 && y < 8) {
-            squares.add(board[newX][newY]);
+        while (!board.getPiece(newX, newY).isPresent() && x < 8 && y < 8) {
+            locations.add(new Location(newX, newY));
 
             newX += x;
             newY += y;
         }
 
-        return squares;
+        return locations;
     }
 
-    public boolean filter(Square square) {
-        if (square.getPiece().isPresent()) {
-            if (square.getPiece().get().getColor() == color) {
+    public boolean filter(Location location, Board board) {
+        if (board.getPiece(location).isPresent()) {
+            if (board.getPiece(location).get().getColor() == color) {
                 return false;
             }
         }
         return true;
     }
 
-    public ArrayList<Square> filteredRayCast(int x, int y, Square[][] board) {
-        ArrayList<Square> squares = rayCast(x, y, board);
+    public ArrayList<Location> filteredRayCast(int x, int y, Board board) {
+        ArrayList<Location> squares = rayCast(x, y, board);
 
-        if (squares.get(squares.size() - 1).getPiece().isPresent()) {
-            if (squares.get(squares.size() - 1).getPiece().get().getColor() == color) {
+        if (board.getPiece(squares.get(squares.size() - 1)).isPresent()) {
+            if (board.getPiece(squares.get(squares.size() - 1)).get().getColor() == color) {
                 squares.remove(squares.size() - 1);
             }
         }

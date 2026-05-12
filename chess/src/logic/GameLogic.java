@@ -12,21 +12,13 @@ public class GameLogic implements ChessGame {
 
     ArrayList<Move> moveHistory;
 
-    Square[][] board;
+    Board board;
 
     public GameLogic() {
         white = new Player(Color.WHITE);
         black = new Player(Color.BLACK);
-        board = new Square[8][8];
+        board = new Board(white, black);
         currentPlayer = white;
-
-        for (Square[] row : board) {
-            for (Square square : row) {
-                square = new Square();
-            }
-        }
-
-        // TODO, add Piece setup
     }
 
     public ArrayList<Location> availableMoves(Piece piece) {
@@ -42,9 +34,7 @@ public class GameLogic implements ChessGame {
                 boolean allowedMove = availableMoves.contains(target);
 
                 if (allowedMove) {
-                    board[piece.getPos().x][piece.getPos().y].removePiece();
-                    piece.move(target);
-                    board[target.x][target.y].setPiece(piece);
+                    board.movePiece(piece, target);
 
                     currentPlayer = (currentPlayer == white) ? black : white;
                     if (getGameStatus() != GameStatus.ONGOING) {
@@ -94,26 +84,11 @@ public class GameLogic implements ChessGame {
         }
     }
 
-    private ArrayList<Piece> getSpecificPieces(Class<?> pieceClass) {
-        ArrayList<Piece> pieces = new ArrayList<Piece>();
-        for (Square[] row : board) {
-            for (Square square : row) {
-                if (square.getPiece().isPresent()) {
-                    Piece piece = square.getPiece().get();
-                    if (piece.getClass() == pieceClass) {
-                        pieces.add(piece);
-                    }
-                }
-            }
-        }
-        return pieces;
-    }
-
     public Optional<Piece> getPieceAt(Location location) {
-        return board[location.x][location.y].getPiece();
+        return board.getPiece(location);
     }
 
-    public Square[][] getBoard() {
+    public Board getBoard() {
         return board;
     }
 
