@@ -18,6 +18,15 @@ public class Board {
         // TODO: piece setup
     }
 
+    public Board(Board other) {
+        squares = new Square[8][8];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                squares[i][j] = other.squares[i][j];
+            }
+        }
+    }
+
     public Square[][] getSquares() {
         return squares;
     }
@@ -57,5 +66,16 @@ public class Board {
         getSquare(piece.getPos()).removePiece();
         piece.move(target);
         getSquare(target).setPiece(piece);
+    }
+
+    public void undoMove(Move move) {
+        Optional<Piece> optionalPiece = getPiece(move.getTarget());
+        if (optionalPiece.isPresent()) {
+            movePiece(optionalPiece.get(), move.getStart());
+        }
+    }
+
+    public void undoMove(Piece piece, Location origin) {
+        movePiece(piece, origin);
     }
 }

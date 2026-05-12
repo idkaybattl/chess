@@ -9,7 +9,7 @@ public abstract class Piece {
     private boolean taken;
 
     public Piece(Location position, Color color) {
-        taken = true;
+        this.taken = false;
         this.position = position;
         this.color = color;
     }

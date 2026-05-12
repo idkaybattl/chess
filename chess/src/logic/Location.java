@@ -10,6 +10,11 @@ public class Location {
         this.y = y;
     }
 
+    public Location(Location other) {
+        this.x = other.x;
+        this.y = other.y;
+    }
+
     public String algebraicNotation() {
         return (String.valueOf((char) (97 + x)) + String.valueOf(y + 1));
     }

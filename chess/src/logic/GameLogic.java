@@ -22,11 +22,33 @@ public class GameLogic implements ChessGame {
     }
 
     public ArrayList<Location> availableMoves(Piece piece) {
-        return piece.getValidMoves(board);
+        ArrayList<Location> validMoves = piece.getValidMoves(board);
+        Location originalPos = new Location(piece.getPos());
+        Player player = (piece.getColor() == Color.WHITE) ? white : black;
 
-        // TODO, filter moves that lead to check out
+        // simulating piece move, then undoing
+        for (int i = 0; i < validMoves.size(); i++) {
+            board.movePiece(piece, validMoves.get(i));
+            if (inCheck(player)) {
+                validMoves.remove(i);
+                i--;
+            }
+            board.undoMove(piece, originalPos);
+        }
+
+        return validMoves;
     }
 
+    public boolean anyMovesLeft(Player player) {
+        for (Piece piece : player.getActivePieces()) {
+            if (availableMoves(piece).size() >= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // move piece, check if game is finished and change player
     public MoveResult movePiece(Piece piece, Location target) {
         if (currentPlayer.getColor() == piece.getColor()) {
             if (getGameStatus() == GameStatus.ONGOING) {
@@ -56,32 +78,35 @@ public class GameLogic implements ChessGame {
     }
 
     public GameStatus getGameStatus() {
-        PlayerStatus whiteStatus = white.getStatus();
-        PlayerStatus blackStatus = black.getStatus();
-
+        // TODO:
         // Check for draws:
         // insufficient material
         // 50 moves
         // repetition
 
-        // placeholder
-        // TODO
+        if (anyMovesLeft(white)) {
+            if (inCheck(white)) {
+                return GameStatus.BLACK;
+            } else {
+                return GameStatus.DRAW;
+            }
+        }
+
+        if (anyMovesLeft(black)) {
+            if (inCheck(black)) {
+                return GameStatus.WHITE;
+            } else {
+                return GameStatus.DRAW;
+            }
+        }
+
         return GameStatus.ONGOING;
     }
 
     private boolean inCheck(Player player) {
+        // TODO
+
         return true;
-    }
-
-    private PlayerStatus getPlayerStatus(Player player) {
-        // if (player.getSpecificPieces(King.class).availableMoves.length == 0) {
-
-        // placeholder
-        if (true) {
-            return PlayerStatus.ONGOING;
-        } else {
-            return PlayerStatus.ONGOING;
-        }
     }
 
     public Optional<Piece> getPieceAt(Location location) {

@@ -18,13 +18,6 @@ public class Player {
         return color;
     }
 
-    // only accounts for player specific rules
-    // not including things like draw by repetition
-    public PlayerStatus getStatus() {
-        // placeholder
-        return PlayerStatus.ONGOING;
-    }
-
     public boolean targetsEnemyKing() {
         // placeholder
         return false;

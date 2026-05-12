@@ -16,17 +16,30 @@ public class Pawn extends Piece {
 
         if (!board.getPiece(forwardMove).isPresent() && inBoard(forwardMove)) {
             moves.add(forwardMove);
+
+            Location longMove = new Location(forwardMove.x, forwardMove.y + yMoveDirection);
+            // if square is free and pawn is on proper rank
+            if (!board.getPiece(longMove).isPresent() && inBoard(forwardMove)
+                    && ((getColor() == Color.WHITE && getPos().y == 1)
+                            || (getColor() == Color.BLACK && getPos().y == 6))) {
+                moves.add(longMove);
+            }
         }
 
-        if (board.getPiece(forwardMove).isPresent() && inBoard(forwardMove)
-                && filter(forwardMove, board)) {
-            moves.add(new Location(forwardMove.x - 1, forwardMove.y));
+        Location[] sideMoves = { new Location(forwardMove.x - 1, forwardMove.y),
+                new Location(forwardMove.x + 1, forwardMove.y) };
+
+        if (board.getPiece(sideMoves[0]).isPresent() && inBoard(sideMoves[0])
+                && filter(sideMoves[0], board)) {
+            moves.add(sideMoves[0]);
         }
 
-        if (board.getPiece(forwardMove).isPresent() && inBoard(forwardMove)
-                && filter(forwardMove, board)) {
-            moves.add(new Location(forwardMove.x + 1, forwardMove.y));
+        if (board.getPiece(sideMoves[1]).isPresent() && inBoard(sideMoves[1])
+                && filter(sideMoves[1], board)) {
+            moves.add(sideMoves[1]);
         }
+
+        // TODO: en passant
 
         return moves;
     }
