@@ -3,6 +3,7 @@ package logic;
 import java.util.ArrayList;
 import java.util.Optional;
 import logic.pieces.Piece;
+import logic.pieces.Pawn;
 
 public class GameLogic implements ChessGame {
     Player white;
@@ -23,6 +24,11 @@ public class GameLogic implements ChessGame {
 
     public ArrayList<Location> availableMoves(Piece piece) {
         ArrayList<Location> validMoves = piece.getValidMoves(board);
+
+        if (piece instanceof Pawn) {
+            validMoves.addAll(getEnPassantMoves((Pawn) piece));
+        }
+
         Location originalPos = new Location(piece.getPos());
         Player player = (piece.getColor() == Color.WHITE) ? white : black;
 
@@ -48,6 +54,20 @@ public class GameLogic implements ChessGame {
         return false;
     }
 
+    private ArrayList<Location> getEnPassantMoves(Pawn pawn) {
+        var moves = new ArrayList<Location>();
+
+        if (moveHistory.isEmpty()) {
+            return moves;
+        }
+
+        Move lastMove = moveHistory.get(moveHistory.size() - 1);
+
+        // TODO: check for en passant
+
+        return moves;
+    }
+
     // move piece, check if game is finished and change player
     public MoveResult movePiece(Piece piece, Location target) {
         if (currentPlayer.getColor() == piece.getColor()) {
@@ -63,7 +83,7 @@ public class GameLogic implements ChessGame {
                         return MoveResult.GAME_OVER;
                     }
 
-                    moveHistory.add(new Move(piece.getPos(), target));
+                    moveHistory.add(new Move(piece, piece.getPos(), target));
 
                     return MoveResult.MOVED;
                 } else {
