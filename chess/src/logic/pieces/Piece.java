@@ -32,7 +32,9 @@ public abstract class Piece {
     // pawns attack the diagonal squares even if theres no piece there
     // => attacked squares not always in list of valid moves
     // matters for checking for checks
-    public abstract ArrayList<Location> getAttackedSquares(Square[][] board);
+    public abstract ArrayList<Location> getAttackedSquares(Square[][] board) {
+        return getValidMoves;
+    }
 
     public void move(Location target) {
         this.position = target;
