@@ -82,4 +82,10 @@ public abstract class Piece {
         
     }
 
+    public boolean inBoard(Location location) {   
+        return(location.x >= 0 && location.x < 8 && location.y >= 0 && location.y < 8);
+        
+    }
+    
+
 }
