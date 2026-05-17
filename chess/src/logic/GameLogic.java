@@ -2,8 +2,8 @@ package logic;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import logic.pieces.Piece;
 import logic.pieces.Pawn;
+import logic.pieces.Piece;
 
 public class GameLogic implements ChessGame {
     Player white;
@@ -30,17 +30,19 @@ public class GameLogic implements ChessGame {
             validMoves.addAll(getEnPassantMoves((Pawn) piece));
         }
 
-        Location originalPos = new Location(piece.getPos());
         Player player = (piece.getColor() == ChessColor.WHITE) ? white : black;
 
-        // simulating piece move, then undoing
+        // Simulate each move and remove moves that leave this player's king in check.
         for (int i = 0; i < validMoves.size(); i++) {
-            board.movePiece(piece, validMoves.get(i));
+            Location target = validMoves.get(i);
+            TempMove tempMove = board.tempMove(piece, target, getCapturedLocation(piece, target));
+
             if (inCheck(player)) {
                 validMoves.remove(i);
                 i--;
             }
-            board.undoMove(piece, originalPos);
+
+            board.undoTempMove(tempMove);
         }
 
         return validMoves;
@@ -64,7 +66,7 @@ public class GameLogic implements ChessGame {
 
         Move lastMove = moveHistory.get(moveHistory.size() - 1);
 
-        if (!(lastMove.getPiece() instanceof Pawn)) {
+        if (!(lastMove.getPiece() instanceof Pawn) || lastMove.getPiece().getColor() == pawn.getColor()) {
             return moves;
         }
 
@@ -80,7 +82,11 @@ public class GameLogic implements ChessGame {
         }
 
         int direction = pawn.getColor() == ChessColor.WHITE ? 1 : -1;
-        moves.add(new Location(target.x, pawnPos.y + direction));
+        Location enPassantTarget = new Location(target.x, pawnPos.y + direction);
+
+        if (enPassantTarget.inBoard()) {
+            moves.add(enPassantTarget);
+        }
 
         return moves;
     }
@@ -95,33 +101,35 @@ public class GameLogic implements ChessGame {
         return attackedSquares;
     }
 
-    // move piece, check if game is finished and change player
     public MoveResult movePiece(Piece piece, Location target) {
-        if (currentPlayer.getColor() == piece.getColor()) {
-            if (getGameStatus() == GameStatus.ONGOING) {
-                ArrayList<Location> availableMoves = availableMoves(piece);
-                boolean allowedMove = availableMoves.contains(target);
-
-                if (allowedMove) {
-                    board.movePiece(piece, target);
-
-                    currentPlayer = (currentPlayer == white) ? black : white;
-                    if (getGameStatus() != GameStatus.ONGOING) {
-                        return MoveResult.GAME_OVER;
-                    }
-
-                    moveHistory.add(new Move(piece, piece.getPos(), target));
-
-                    return MoveResult.MOVED;
-                } else {
-                    return MoveResult.ILLEGAL_MOVE;
-                }
-            } else {
-                return MoveResult.GAME_OVER;
-            }
-        } else {
+        if (currentPlayer.getColor() != piece.getColor()) {
             return MoveResult.NOT_YOUR_TURN;
         }
+
+        if (getGameStatus() != GameStatus.ONGOING) {
+            return MoveResult.GAME_OVER;
+        }
+
+        ArrayList<Location> availableMoves = availableMoves(piece);
+        boolean allowedMove = availableMoves.contains(target);
+
+        if (!allowedMove) {
+            return MoveResult.ILLEGAL_MOVE;
+        }
+
+        Location origin = new Location(piece.getPos());
+        Location capturedLocation = getCapturedLocation(piece, target);
+        Optional<Piece> capturedPiece = board.getPiece(capturedLocation);
+
+        board.movePiece(piece, target, capturedLocation);
+        moveHistory.add(new Move(piece, origin, target, capturedPiece.orElse(null), capturedLocation));
+
+        currentPlayer = (currentPlayer == white) ? black : white;
+        if (getGameStatus() != GameStatus.ONGOING) {
+            return MoveResult.GAME_OVER;
+        }
+
+        return MoveResult.MOVED;
     }
 
     public MoveResult movePiece(Piece piece, int x, int y) {
@@ -135,17 +143,9 @@ public class GameLogic implements ChessGame {
         // 50 moves
         // repetition
 
-        if (!anyMovesLeft(white)) {
-            if (inCheck(white)) {
-                return GameStatus.BLACK;
-            } else {
-                return GameStatus.DRAW;
-            }
-        }
-
-        if (!anyMovesLeft(black)) {
-            if (inCheck(black)) {
-                return GameStatus.WHITE;
+        if (!anyMovesLeft(currentPlayer)) {
+            if (inCheck(currentPlayer)) {
+                return currentPlayer == white ? GameStatus.BLACK : GameStatus.WHITE;
             } else {
                 return GameStatus.DRAW;
             }
@@ -165,6 +165,14 @@ public class GameLogic implements ChessGame {
         }
 
         return false;
+    }
+
+    private Location getCapturedLocation(Piece piece, Location target) {
+        if (piece instanceof Pawn && piece.getPos().x != target.x && board.getPiece(target).isEmpty()) {
+            return new Location(target.x, piece.getPos().y);
+        }
+
+        return target;
     }
 
     public Optional<Piece> getPieceAt(Location location) {

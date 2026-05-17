@@ -1,7 +1,7 @@
 package logic;
 
-import java.util.Optional;
 import java.util.ArrayList;
+import java.util.Optional;
 import logic.pieces.Bishop;
 import logic.pieces.King;
 import logic.pieces.Knight;
@@ -56,37 +56,24 @@ public class Board {
         player.setPieces(pieces);
     }
 
-    public Board(Board other) {
-        squares = new Square[8][8];
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                squares[i][j] = other.squares[i][j];
-            }
-        }
-    }
-
     public Square[][] getSquares() {
         return squares;
     }
 
     public Optional<Piece> getPiece(Location location) {
-        if (location.inBoard()) {
-            return squares[location.getX()][location.getY()].getPiece();
-        } else {
+        if (!location.inBoard()) {
             return Optional.empty();
         }
+
+        return squares[location.getX()][location.getY()].getPiece();
     }
 
     public Optional<Piece> getPiece(int x, int y) {
-        return squares[x][y].getPiece();
+        return getPiece(new Location(x, y));
     }
 
     private Square getSquare(Location location) {
         return squares[location.getX()][location.getY()];
-    }
-
-    private Square getSquare(int x, int y) {
-        return squares[x][y];
     }
 
     public <T extends Piece> ArrayList<T> getSpecificPieces(Class<T> pieceClass) {
@@ -106,22 +93,55 @@ public class Board {
     }
 
     public void movePiece(Piece piece, Location target) {
-        if (getPiece(target).isPresent()) {
-            getPiece(target).get().take();
+        movePiece(piece, target, target);
+    }
+
+    public void movePiece(Piece piece, Location target, Location capturedLocation) {
+        Optional<Piece> capturedPiece = getPiece(capturedLocation);
+
+        if (capturedPiece.isPresent()) {
+            capturedPiece.get().take();
+            getSquare(capturedLocation).removePiece();
         }
-        getSquare(piece.getPos()).removePiece();
-        piece.move(target);
+
+        Location origin = new Location(piece.getPos());
+        getSquare(origin).removePiece();
+        piece.move(new Location(target));
         getSquare(target).setPiece(piece);
     }
 
-    public void undoMove(Move move) {
-        Optional<Piece> optionalPiece = getPiece(move.getTarget());
-        if (optionalPiece.isPresent()) {
-            movePiece(optionalPiece.get(), move.getStart());
-        }
+    public TempMove tempMove(Piece piece, Location target) {
+        return tempMove(piece, target, target);
     }
 
-    public void undoMove(Piece piece, Location origin) {
-        movePiece(piece, origin);
+    public TempMove tempMove(Piece piece, Location target, Location capturedLocation) {
+        Optional<Piece> capturedPiece = getPiece(capturedLocation);
+        Location origin = new Location(piece.getPos());
+        TempMove tempMove = new TempMove(capturedPiece, piece, origin, target, capturedLocation);
+
+        if (capturedPiece.isPresent()) {
+            capturedPiece.get().take();
+            getSquare(capturedLocation).removePiece();
+        }
+
+        getSquare(origin).removePiece();
+        piece.tempMove(new Location(target));
+        getSquare(target).setPiece(piece);
+
+        return tempMove;
+    }
+
+    public void undoTempMove(TempMove move) {
+        Optional<Piece> capturedPiece = move.getCapturedPiece();
+
+        getSquare(move.getTarget()).removePiece();
+        move.getMovingPiece().undoTempMove(move.getOrigin());
+        getSquare(move.getOrigin()).setPiece(move.getMovingPiece());
+
+        if (capturedPiece.isPresent()) {
+            Piece piece = capturedPiece.get();
+            piece.restoreTaken(move.capturedPieceWasTaken());
+            getSquare(move.getCapturedLocation()).setPiece(piece);
+        }
     }
 }

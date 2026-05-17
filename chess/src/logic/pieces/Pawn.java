@@ -19,7 +19,7 @@ public class Pawn extends Piece {
 
             Location longMove = new Location(forwardMove.x, forwardMove.y + yMoveDirection);
             // if square is free and pawn is on proper rank
-            if (forwardMove.inBoard() && !board.getPiece(longMove).isPresent()
+            if (longMove.inBoard() && !board.getPiece(longMove).isPresent()
                     && ((getColor() == ChessColor.WHITE && getPos().y == 1)
                             || (getColor() == ChessColor.BLACK && getPos().y == 6))) {
                 moves.add(longMove);
@@ -42,4 +42,23 @@ public class Pawn extends Piece {
         return moves;
     }
 
+    public ArrayList<Location> getAttackedSquares(Board board) {
+        var moves = new ArrayList<Location>();
+        int yMoveDirection = (getColor() == ChessColor.WHITE) ? 1 : -1;
+
+        Location forwardMove = new Location(getPos().x, getPos().y + yMoveDirection);
+
+        Location[] sideMoves = { new Location(forwardMove.x - 1, forwardMove.y),
+                new Location(forwardMove.x + 1, forwardMove.y) };
+
+        if (sideMoves[0].inBoard()) {
+            moves.add(sideMoves[0]);
+        }
+
+        if (sideMoves[1].inBoard()) {
+            moves.add(sideMoves[1]);
+        }
+
+        return moves;
+    }
 }

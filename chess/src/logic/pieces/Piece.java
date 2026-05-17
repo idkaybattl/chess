@@ -47,8 +47,20 @@ public abstract class Piece {
         this.hasMoved = true;
     }
 
+    public void tempMove(Location target) {
+        this.position = target;
+    }
+
+    public void undoTempMove(Location origin) {
+        tempMove(origin);
+    }
+
     public void take() {
         taken = true;
+    }
+
+    public void restoreTaken(boolean taken) {
+        this.taken = taken;
     }
 
     public ArrayList<Location> rayCast(int x, int y, Board board) {
@@ -62,6 +74,9 @@ public abstract class Piece {
 
             newX += x;
             newY += y;
+        }
+        if (inBoard(newX, newY)) {
+            locations.add(new Location(newX, newY));
         }
 
         return locations;
