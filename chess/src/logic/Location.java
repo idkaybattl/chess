@@ -26,4 +26,23 @@ public class Location {
     public int getY() {
         return y;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof Location)) {
+            return false;
+        }
+
+        Location location = (Location) other;
+        return x == location.x && y == location.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * x + y;
+    }
 }
