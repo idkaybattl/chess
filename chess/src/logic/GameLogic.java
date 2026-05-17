@@ -16,8 +16,8 @@ public class GameLogic implements ChessGame {
     Board board;
 
     public GameLogic() {
-        white = new Player(Color.WHITE);
-        black = new Player(Color.BLACK);
+        white = new Player(ChessColor.WHITE);
+        black = new Player(ChessColor.BLACK);
         board = new Board(white, black);
         currentPlayer = white;
     }
@@ -30,7 +30,7 @@ public class GameLogic implements ChessGame {
         }
 
         Location originalPos = new Location(piece.getPos());
-        Player player = (piece.getColor() == Color.WHITE) ? white : black;
+        Player player = (piece.getColor() == ChessColor.WHITE) ? white : black;
 
         // simulating piece move, then undoing
         for (int i = 0; i < validMoves.size(); i++) {
@@ -78,7 +78,7 @@ public class GameLogic implements ChessGame {
             return moves;
         }
 
-        int direction = pawn.getColor() == Color.WHITE ? 1 : -1;
+        int direction = pawn.getColor() == ChessColor.WHITE ? 1 : -1;
         moves.add(new Location(target.x, pawnPos.y + direction));
 
         return moves;
@@ -123,6 +123,10 @@ public class GameLogic implements ChessGame {
         }
     }
 
+    public MoveResult movePiece(Piece piece, int x, int y) {
+        return movePiece(piece, new Location(x, y));
+    }
+
     public GameStatus getGameStatus() {
         // TODO:
         // Check for draws:
@@ -150,7 +154,7 @@ public class GameLogic implements ChessGame {
     }
 
     private boolean inCheck(Player player) {
-        Player enemy = (player.getColor() == Color.WHITE) ? black : white;
+        Player enemy = (player.getColor() == ChessColor.WHITE) ? black : white;
         ArrayList<Location> attackedLocations = allAttackedSquares(enemy);
 
         for (Location attackedLocation : attackedLocations) {
@@ -164,6 +168,10 @@ public class GameLogic implements ChessGame {
 
     public Optional<Piece> getPieceAt(Location location) {
         return board.getPiece(location);
+    }
+
+    public Optional<Piece> getPieceAt(int x, int y) {
+        return board.getPiece(x, y);
     }
 
     public Board getBoard() {

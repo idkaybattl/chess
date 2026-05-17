@@ -8,7 +8,7 @@ public class Knight extends Piece {
     private static int[][] localMoves = { { -2, 1 }, { -2, -1 }, { -1, 2 }, { -1, -2 }, { 1, 2 }, { 1, -2 }, { 2, 1 },
             { 2, -1 } };
 
-    public Knight(Location position, Color color) {
+    public Knight(Location position, ChessColor color) {
         super(position, color);
     }
 

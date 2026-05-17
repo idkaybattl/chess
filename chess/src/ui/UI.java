@@ -7,60 +7,89 @@ import javax.swing.event.*;
 
 import javax.swing.JFrame;
 import javax.swing.JButton;
-//import types.*;
+import logic.*;
+import logic.pieces.*;
 
 public class UI extends JFrame {
-    // ChessGame logic;
+    private ChessGame logic;
 
     private JButton[][] squares = new JButton[8][8];
 
     public UI() {
-        // logic = new GameLogic();
+        logic = new GameLogic();
 
         super();
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        int frameWidth = 1024;
-        int frameHeight = 1024;
-        setSize(frameWidth, frameHeight);
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = (d.width - getSize().width) / 2;
-        int y = (d.height - getSize().height) / 2;
-        setLocation(x, y);
         setTitle("dada");
         setResizable(false);
-        Container cp = getContentPane();
-        cp.setLayout(null);
 
+        JMenuBar menu = new JMenuBar();
+        JPanel boardPanel = new JPanel(new GridLayout(8, 8));
+        boardPanel.setPreferredSize(new Dimension(640, 640));
+
+        // board
         squares = new JButton[8][8];
 
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                squares[i][j] = new JButton();
-                squares[i][j].setBounds(i * frameWidth / 8, frameHeight - (j + 1) * frameHeight / 8, frameWidth / 8,
-                        frameHeight / 8);
-                squares[i][j].addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        squareClicked(evt);
-                    }
-                });
+        // weird loop to appease grid layout
+        // start adding from top left to bottom right
+        // -> first one has to be a8 -> y=7, x = 0
+        for (int y = 7; y >= 0; y--) {
+            for (int x = 0; x < 8; x++) {
+                JButton button = new JButton();
+                squares[x][y] = button;
 
-                if ((i + j) % 2 == 0) {
-                    squares[i][j].setBackground(new Color(0x7A6543));
-                }
-                cp.add(squares[i][j]);
+                button.setOpaque(true);
+                button.setBorderPainted(false);
+
+                boolean light = (x + y) % 2 == 0;
+                button.setBackground(light ? Color.DARK_GRAY : Color.LIGHT_GRAY);
+
+                int finalX = x;
+                int finalY = y;
+                button.addActionListener(e -> squareClicked(finalX, finalY));
+
+                boardPanel.add(squares[x][y]);
             }
         }
 
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.add(boardPanel);
+
+        setContentPane(mainPanel);
+        pack();
+        setLocationRelativeTo(null);
+
         setVisible(true);
 
-        // updateBoard();
+        updateBoard();
     }
 
     public static void main(String[] args) {
         new UI();
     }
 
-    private void squareClicked(ActionEvent evt) {
+    private void squareClicked(int x, int y) {
+        System.out.println("Clicked " + x + ", " + y);
+    }
+
+    private void updateBoard() {
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                updateSquare(x, y);
+
+            }
+        }
+    }
+
+    private void updateSquare(int x, int y) {
+        var squareContent = logic.getPieceAt(x, y);
+        if (squareContent.isPresent()) {
+            Piece piece = squareContent.get();
+            squares[x][y]
+                    .setText(((piece.getColor() == ChessColor.WHITE) ? "W" : "B") + piece.getClass().getSimpleName());
+        } else {
+            squares[x][y].setText("");
+        }
     }
 
     // private void updateBoard() {

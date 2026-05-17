@@ -5,11 +5,11 @@ import java.util.ArrayList;
 
 public abstract class Piece {
     private Location position;
-    private Color color;
+    private ChessColor color;
     private boolean taken;
     private boolean hasMoved;
 
-    public Piece(Location position, Color color) {
+    public Piece(Location position, ChessColor color) {
         this.taken = false;
         this.position = position;
         this.color = color;
@@ -20,7 +20,7 @@ public abstract class Piece {
         return position;
     }
 
-    public Color getColor() {
+    public ChessColor getColor() {
         return color;
     }
 

@@ -4,13 +4,13 @@ import logic.*;
 import java.util.ArrayList;
 
 public class Pawn extends Piece {
-    public Pawn(Location position, Color color) {
+    public Pawn(Location position, ChessColor color) {
         super(position, color);
     }
 
     public ArrayList<Location> getValidMoves(Board board) {
         var moves = new ArrayList<Location>();
-        int yMoveDirection = (getColor() == Color.WHITE) ? 1 : -1;
+        int yMoveDirection = (getColor() == ChessColor.WHITE) ? 1 : -1;
 
         Location forwardMove = new Location(getPos().x, getPos().y + yMoveDirection);
 
@@ -20,8 +20,8 @@ public class Pawn extends Piece {
             Location longMove = new Location(forwardMove.x, forwardMove.y + yMoveDirection);
             // if square is free and pawn is on proper rank
             if (!board.getPiece(longMove).isPresent() && inBoard(forwardMove)
-                    && ((getColor() == Color.WHITE && getPos().y == 1)
-                            || (getColor() == Color.BLACK && getPos().y == 6))) {
+                    && ((getColor() == ChessColor.WHITE && getPos().y == 1)
+                            || (getColor() == ChessColor.BLACK && getPos().y == 6))) {
                 moves.add(longMove);
             }
         }

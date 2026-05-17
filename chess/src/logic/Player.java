@@ -5,16 +5,16 @@ import logic.pieces.Piece;
 import logic.pieces.King;
 
 public class Player {
-    private Color color;
+    private ChessColor color;
     private Piece[] pieces;
     private King king;
 
-    public Player(Color color) {
+    public Player(ChessColor color) {
         this.color = color;
         pieces = new Piece[16];
     }
 
-    public Color getColor() {
+    public ChessColor getColor() {
         return color;
     }
 
@@ -25,6 +25,17 @@ public class Player {
 
     public King getKing() {
         return king;
+    }
+
+    public void setPieces(Piece[] pieces) {
+        this.pieces = pieces;
+
+        for (Piece piece : pieces) {
+            if (piece instanceof King) {
+                this.king = (King) piece;
+                return;
+            }
+        }
     }
 
     public ArrayList<Piece> getActivePieces() {

@@ -4,7 +4,7 @@ import logic.*;
 import java.util.ArrayList;
 
 public class Rook extends Piece {
-    public Rook(Location position, Color color) {
+    public Rook(Location position, ChessColor color) {
         super(position, color);
     }
 

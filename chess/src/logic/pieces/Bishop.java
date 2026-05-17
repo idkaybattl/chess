@@ -4,7 +4,7 @@ import logic.*;
 import java.util.ArrayList;
 
 public class Bishop extends Piece {
-    public Bishop(Location position, Color color) {
+    public Bishop(Location position, ChessColor color) {
         super(position, color);
     }
 

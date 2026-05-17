@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class King extends Piece {
 
-    public King(Location position, Color color) {
+    public King(Location position, ChessColor color) {
         super(position, color);
     }
 
