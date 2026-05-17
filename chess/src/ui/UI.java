@@ -6,6 +6,8 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import javax.swing.JFrame;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import javax.swing.JButton;
 
 import java.util.ArrayList;
@@ -48,6 +50,7 @@ public class UI extends JFrame {
                 squares[x][y] = button;
 
                 button.setOpaque(true);
+                button.setBorder(new LineBorder(Color.GREEN, 2));
                 button.setBorderPainted(false);
 
                 boolean light = (x + y) % 2 == 0;
@@ -117,9 +120,13 @@ public class UI extends JFrame {
         button.setBackground(light ? Color.DARK_GRAY : Color.LIGHT_GRAY);
 
         if (location.equals(selectedSquare)) {
-            button.setBackground(Color.YELLOW);
+            button.setBorder(new LineBorder(Color.YELLOW, 2));
+            button.setBorderPainted(true);
         } else if (highlightedMoves.contains(location)) {
-            button.setBackground(Color.GREEN);
+            button.setBorder(new LineBorder(Color.GREEN, 2));
+            button.setBorderPainted(true);
+        } else {
+            button.setBorderPainted(false);
         }
 
         var squareContent = logic.getPieceAt(location);
