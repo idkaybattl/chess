@@ -70,7 +70,11 @@ public class Board {
     }
 
     public Optional<Piece> getPiece(Location location) {
-        return squares[location.getX()][location.getY()].getPiece();
+        if (location.inBoard()) {
+            return squares[location.getX()][location.getY()].getPiece();
+        } else {
+            return Optional.empty();
+        }
     }
 
     public Optional<Piece> getPiece(int x, int y) {

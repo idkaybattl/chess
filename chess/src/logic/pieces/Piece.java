@@ -57,7 +57,7 @@ public abstract class Piece {
 
         var locations = new ArrayList<Location>();
 
-        while (!board.getPiece(newX, newY).isPresent() && x < 8 && y < 8) {
+        while (inBoard(newX, newY) && !board.getPiece(newX, newY).isPresent()) {
             locations.add(new Location(newX, newY));
 
             newX += x;
@@ -79,7 +79,7 @@ public abstract class Piece {
     public ArrayList<Location> filteredRayCast(int x, int y, Board board) {
         ArrayList<Location> squares = rayCast(x, y, board);
 
-        if (board.getPiece(squares.get(squares.size() - 1)).isPresent()) {
+        if (squares.size() > 0 && board.getPiece(squares.get(squares.size() - 1)).isPresent()) {
             if (board.getPiece(squares.get(squares.size() - 1)).get().getColor() == color) {
                 squares.remove(squares.size() - 1);
             }
@@ -91,7 +91,10 @@ public abstract class Piece {
 
     public boolean inBoard(Location location) {
         return (location.x >= 0 && location.x < 8 && location.y >= 0 && location.y < 8);
+    }
 
+    public boolean inBoard(int x, int y) {
+        return (x >= 0 && x < 8 && y >= 0 && y < 8);
     }
 
 }

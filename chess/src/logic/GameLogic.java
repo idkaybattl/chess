@@ -18,6 +18,7 @@ public class GameLogic implements ChessGame {
     public GameLogic() {
         white = new Player(ChessColor.WHITE);
         black = new Player(ChessColor.BLACK);
+        moveHistory = new ArrayList<>();
         board = new Board(white, black);
         currentPlayer = white;
     }

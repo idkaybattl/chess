@@ -27,6 +27,10 @@ public class Location {
         return y;
     }
 
+    public boolean inBoard() {
+        return (x >= 0 && x < 8 && y >= 0 && y < 8);
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) {

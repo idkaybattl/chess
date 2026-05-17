@@ -18,7 +18,7 @@ public class Knight extends Piece {
         for (int i = 0; i < 8; i++) {
             Location move = new Location(getPos().x + localMoves[i][0], getPos().y + localMoves[i][1]);
 
-            if (filter(move, board) && inBoard(move)) {
+            if (move.inBoard() && filter(move, board)) {
                 moves.add(move);
             }
         }

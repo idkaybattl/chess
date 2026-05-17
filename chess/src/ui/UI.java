@@ -7,12 +7,21 @@ import javax.swing.event.*;
 
 import javax.swing.JFrame;
 import javax.swing.JButton;
-import logic.*;
+
+import java.util.ArrayList;
+import java.util.Optional;
+
+import logic.ChessColor;
+import logic.ChessGame;
+import logic.GameLogic;
+import logic.Location;
 import logic.pieces.*;
 
 public class UI extends JFrame {
     private ChessGame logic;
 
+    private Location selectedSquare;
+    private java.util.List<Location> highlightedMoves = new ArrayList<>();
     private JButton[][] squares = new JButton[8][8];
 
     public UI() {
@@ -69,7 +78,26 @@ public class UI extends JFrame {
     }
 
     private void squareClicked(int x, int y) {
-        System.out.println("Clicked " + x + ", " + y);
+        Location clicked = new Location(x, y);
+
+        if (selectedSquare != null && highlightedMoves.contains(clicked)) {
+            Piece selectedPiece = logic.getPieceAt(selectedSquare).orElseThrow();
+            logic.movePiece(selectedPiece, clicked);
+            clearSelection();
+            updateBoard();
+            return;
+        }
+
+        Optional<Piece> clickedPiece = logic.getPieceAt(clicked);
+
+        if (clickedPiece.isPresent()
+                && clickedPiece.get().getColor() == logic.getCurrentPlayer().getColor()) {
+            selectSquare(clicked, clickedPiece.get());
+        } else {
+            clearSelection();
+        }
+
+        updateBoard();
     }
 
     private void updateBoard() {
@@ -82,14 +110,35 @@ public class UI extends JFrame {
     }
 
     private void updateSquare(int x, int y) {
-        var squareContent = logic.getPieceAt(x, y);
+        Location location = new Location(x, y);
+        JButton button = squares[x][y];
+
+        boolean light = (x + y) % 2 == 0;
+        button.setBackground(light ? Color.DARK_GRAY : Color.LIGHT_GRAY);
+
+        if (location.equals(selectedSquare)) {
+            button.setBackground(Color.YELLOW);
+        } else if (highlightedMoves.contains(location)) {
+            button.setBackground(Color.GREEN);
+        }
+
+        var squareContent = logic.getPieceAt(location);
         if (squareContent.isPresent()) {
             Piece piece = squareContent.get();
-            squares[x][y]
-                    .setText(((piece.getColor() == ChessColor.WHITE) ? "W" : "B") + piece.getClass().getSimpleName());
+            button.setText(((piece.getColor() == ChessColor.WHITE) ? "W" : "B") + piece.getClass().getSimpleName());
         } else {
-            squares[x][y].setText("");
+            button.setText("");
         }
+    }
+
+    private void selectSquare(Location location, Piece piece) {
+        selectedSquare = location;
+        highlightedMoves = new ArrayList<>(logic.availableMoves(piece));
+    }
+
+    private void clearSelection() {
+        selectedSquare = null;
+        highlightedMoves.clear();
     }
 
     // private void updateBoard() {
