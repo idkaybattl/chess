@@ -97,7 +97,8 @@ public class GameLogic implements ChessGame {
 
     private ArrayList<Location> getCastleMoves(Player player) {
         ArrayList<Location> castleMoves = new ArrayList<>();
-        
+        Player otherPlayer = (player.getColor() == white) ? black : white;
+
         if (!player.getKing().hasMoved()) {
             int backrank = (player.getColor() == ChessColor.WHITE) ? 0 : 7;
 
@@ -108,7 +109,11 @@ public class GameLogic implements ChessGame {
             if (fstSquare.isPresent()) {
                 fstRook = fstSquare.get();
                 if ((fstRook instanceof Rook) && !fstRook.hasMoved()) {
-                    castleMoves.add(new Location(2, backrank));
+                    if (!board.getPieceAt(3, backrank).isPresent() && !board.getPieceAt(2, backrank)) {
+                        if (!allAttackedSquares(otherPlayer).contains(new Location(3, backrank)) && !allAttackedSquares(otherPlayer).contains(new Location(2, backrank))) {
+                            castleMoves.add(new Location(2, backrank));
+                        }
+                    }
                 }
             }
 
