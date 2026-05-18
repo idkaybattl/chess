@@ -3,6 +3,8 @@ package logic;
 import java.util.ArrayList;
 import java.util.Optional;
 import logic.pieces.Pawn;
+import logic.pieces.King;
+import logic.pieces.Rook;
 import logic.pieces.Piece;
 
 public class GameLogic implements ChessGame {
@@ -26,15 +28,15 @@ public class GameLogic implements ChessGame {
     public ArrayList<Location> availableMoves(Piece piece) {
         ArrayList<Location> validMoves = piece.getValidMoves(board);
 
+        Player player = (piece.getColor() == ChessColor.WHITE) ? white : black;
+
         if (piece instanceof Pawn) {
             validMoves.addAll(getEnPassantMoves((Pawn) piece));
         }
 
         if (piece instanceof King) {
-            validMoves.addAll(getCastleMoves((King) piece));
+            validMoves.addAll(getCastleMoves(player));
         }
-
-        Player player = (piece.getColor() == ChessColor.WHITE) ? white : black;
 
         // Simulate each move and remove moves that leave this player's king in check.
         for (int i = 0; i < validMoves.size(); i++) {
@@ -97,34 +99,46 @@ public class GameLogic implements ChessGame {
 
     private ArrayList<Location> getCastleMoves(Player player) {
         ArrayList<Location> castleMoves = new ArrayList<>();
-        Player otherPlayer = (player.getColor() == white) ? black : white;
+        Player otherPlayer = (player.getColor() == ChessColor.WHITE) ? black : white;
 
         if (!player.getKing().hasMoved()) {
             int backrank = (player.getColor() == ChessColor.WHITE) ? 0 : 7;
 
-            Optional<Piece> fstSquare = board.getPieceAt(0, backrank);
-            Optional<Piece> sndSquare = board.getPieceAt(7, backrank);
+            Optional<Piece> qSideSquare = board.getPiece(0, backrank);
+            Optional<Piece> kSideSquare = board.getPiece(7, backrank);
 
             // long castle
-            if (fstSquare.isPresent()) {
-                fstRook = fstSquare.get();
-                if ((fstRook instanceof Rook) && !fstRook.hasMoved()) {
-                    if (!board.getPieceAt(3, backrank).isPresent() && !board.getPieceAt(2, backrank)) {
-                        if (!allAttackedSquares(otherPlayer).contains(new Location(3, backrank)) && !allAttackedSquares(otherPlayer).contains(new Location(2, backrank))) {
-                            castleMoves.add(new Location(2, backrank));
-                        }
-                    }
+            if (qSideSquare.isPresent()) {
+                Piece rook = qSideSquare.get();
+                if ((rook instanceof Rook)
+                        && !rook.hasMoved()
+                        && board.getPiece(1, backrank).isEmpty()
+                        && board.getPiece(2, backrank).isEmpty()
+                        && board.getPiece(3, backrank).isEmpty()
+                        && !inCheck(player)
+                        && !allAttackedSquares(otherPlayer).contains(new Location(2, backrank))
+                        && !allAttackedSquares(otherPlayer).contains(new Location(3, backrank))) {
+                    castleMoves.add(new Location(2, backrank));
                 }
             }
 
             // short castle
-            if (sndSquare.isPresent()) {
-                sndRook = sndSquare.get();
-                if ((sndRook instanceof Rook) && !sndRook.hasMoved()) {
+            if (kSideSquare.isPresent()) {
+                Piece rook = kSideSquare.get();
+                var attackedSquares = allAttackedSquares(otherPlayer);
+                if ((rook instanceof Rook)
+                        && !rook.hasMoved()
+                        && board.getPiece(5, backrank).isEmpty()
+                        && board.getPiece(6, backrank).isEmpty()
+                        && !inCheck(player)
+                        && !attackedSquares.contains(new Location(5, backrank))
+                        && !attackedSquares.contains(new Location(6, backrank))) {
                     castleMoves.add(new Location(6, backrank));
                 }
             }
-        }  
+        }
+
+        return castleMoves;
     }
 
     private ArrayList<Location> allAttackedSquares(Player player) {
@@ -157,6 +171,7 @@ public class GameLogic implements ChessGame {
         Location capturedLocation = getCapturedLocation(piece, target);
         Optional<Piece> capturedPiece = board.getPiece(capturedLocation);
 
+        // TODO: extra case for castling
         board.movePiece(piece, target, capturedLocation);
         moveHistory.add(new Move(piece, origin, target, capturedPiece.orElse(null), capturedLocation));
 
