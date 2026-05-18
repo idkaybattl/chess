@@ -30,6 +30,10 @@ public class GameLogic implements ChessGame {
             validMoves.addAll(getEnPassantMoves((Pawn) piece));
         }
 
+        if (piece instanceof King) {
+            validMoves.addAll(getCastleMoves((King) piece));
+        }
+
         Player player = (piece.getColor() == ChessColor.WHITE) ? white : black;
 
         // Simulate each move and remove moves that leave this player's king in check.
@@ -89,6 +93,33 @@ public class GameLogic implements ChessGame {
         }
 
         return moves;
+    }
+
+    private ArrayList<Location> getCastleMoves(Player player) {
+        ArrayList<Location> castleMoves = new ArrayList<>();
+        
+        if (!player.getKing().hasMoved()) {
+            int backrank = (player.getColor() == ChessColor.WHITE) ? 0 : 7;
+
+            Optional<Piece> fstSquare = board.getPieceAt(0, backrank);
+            Optional<Piece> sndSquare = board.getPieceAt(7, backrank);
+
+            // long castle
+            if (fstSquare.isPresent()) {
+                fstRook = fstSquare.get();
+                if ((fstRook instanceof Rook) && !fstRook.hasMoved()) {
+                    castleMoves.add(new Location(2, backrank));
+                }
+            }
+
+            // short castle
+            if (sndSquare.isPresent()) {
+                sndRook = sndSquare.get();
+                if ((sndRook instanceof Rook) && !sndRook.hasMoved()) {
+                    castleMoves.add(new Location(6, backrank));
+                }
+            }
+        }  
     }
 
     private ArrayList<Location> allAttackedSquares(Player player) {
