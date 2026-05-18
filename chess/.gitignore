@@ -1,2 +1,3 @@
 /bin/
-/src/icons/*.kra
+/**/*.kra
+/**/*.kra~
