@@ -198,8 +198,10 @@ public class GameLogic implements ChessGame {
             if (currentPlayer.getActivePieces(Knight).size() < 2 && currentPlayer.getActivePieces(Bishop).isEmpty() || 
                 currentPlayer.getActivePieces(Knight).isEmpty() && currentPlayer.getActivePieces(Bishop).size() < 2 ||
                 currentPlayer.getActivePieces(Knight).isEmpty() && currentPlayer.getActivePieces(Bishop).size() < 3 
-                    && currentPlayer.getActivePieces(Bishop).get(0).getSquareColor) 
-        }
+                    && currentPlayer.getActivePieces(Bishop).get(0).getSquareColor() == currentPlayer.getActivePieces(Bishop).get(1).getSquareColor()){
+                        
+
+                    }
         // 50 moves
         // repetition
 

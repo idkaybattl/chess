@@ -20,7 +20,7 @@ public class Bishop extends Piece {
     }
 
     public boolean getSquareColor() {
-        return (x + y) % 2 == 0;
+        return (getX() + getY() % 2 == 0;
         //true = dark Square Bishop
     }
 
