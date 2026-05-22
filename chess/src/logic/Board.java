@@ -111,19 +111,23 @@ public class Board {
     }
 
     public void movePiece(Piece piece, Location target, Location capturedLocation) {
-        Optional<Piece> capturedPiece = getPiece(capturedLocation);
+        if (piece instanceof King && Math.abs(target.getX() - piece.getPos().getX()) == 2) {
+            castle((King) piece, (target.getX() == 2));
+        } else {
+            Optional<Piece> capturedPiece = getPiece(capturedLocation);
 
-        if (capturedPiece.isPresent()) {
-            capturedPiece.get().take();
-            getSquare(capturedLocation).removePiece();
+            if (capturedPiece.isPresent()) {
+                capturedPiece.get().take();
+                getSquare(capturedLocation).removePiece();
+            }
+
+            Location origin = new Location(piece.getPos());
+            getSquare(origin).removePiece();
+            piece.move(new Location(target));
+            getSquare(target).setPiece(piece);
         }
-
-        Location origin = new Location(piece.getPos());
-        getSquare(origin).removePiece();
-        piece.move(new Location(target));
-        getSquare(target).setPiece(piece);
     }
-
+    
     public TempMove tempMove(Piece piece, Location target) {
         return tempMove(piece, target, target);
     }
