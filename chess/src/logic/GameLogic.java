@@ -172,7 +172,6 @@ public class GameLogic implements ChessGame {
         Location capturedLocation = getCapturedLocation(piece, target);
         Optional<Piece> capturedPiece = board.getPiece(capturedLocation);
 
-        // TODO: extra case for castling
         board.movePiece(piece, target, capturedLocation);
         moveHistory.add(new Move(piece, origin, target, capturedPiece.orElse(null), capturedLocation));
 
