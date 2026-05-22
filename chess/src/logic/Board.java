@@ -92,6 +92,20 @@ public class Board {
         return pieces;
     }
 
+    public void castle(King king, boolean queenSide) {
+        int backrank = king.getPos().getX();
+        Location newKingPos = new Location(((queenside) ? 2 : 6), backrank);
+        Location newRookPos = new Location(((queenside) ? 3 : 5), backrank);
+        Rook rook = (queenSide) ? getPiece(0, backrank) : getPiece(7, backrank);
+
+        getSquare(newKingPos).setPiece(king);
+        getSquare(newRookPos).setPiece(rook);
+        getSquare(king.getPos()).removePiece();
+        getSquare(rook.getPos()).removePiece();
+        king.move(newKingPos);
+        rook.move(newRookPos);
+    }
+
     public void movePiece(Piece piece, Location target) {
         movePiece(piece, target, target);
     }
