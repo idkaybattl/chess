@@ -172,6 +172,7 @@ public class GameLogic implements ChessGame {
         Optional<Piece> capturedPiece = board.getPiece(capturedLocation);
 
         // TODO: extra case for castling
+        // add board.castle(king, rook)
         board.movePiece(piece, target, capturedLocation);
         moveHistory.add(new Move(piece, origin, target, capturedPiece.orElse(null), capturedLocation));
 
