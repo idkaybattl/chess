@@ -243,7 +243,8 @@ public class Board {
         }
     }
 
-    public SimplePiece simplifyBoard() {
-        Class<? extends Piece>[][] board = new Class<? extends Piece>[8][8];
+    public SimplePiece[][] simplifyBoard() {
+        SimplePiece[][] board = new SimplePiece[8][8];
+        return board;
     }
 }
