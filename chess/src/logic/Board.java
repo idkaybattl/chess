@@ -243,8 +243,8 @@ public class Board {
         }
     }
 
-    public SimplePiece[][] simplifyBoard() {
-        SimplePiece[][] board = new SimplePiece[8][8];
-        return board;
-    }
+    //public SimplePiece[][] simplifyBoard() {
+    //    SimplePiece[][] board = new SimplePiece[8][8];
+    //    return board;
+    //}
 }

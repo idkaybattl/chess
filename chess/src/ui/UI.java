@@ -28,6 +28,7 @@ public class UI extends JFrame {
 
     private JPanel gameOverScreen;
     private JLabel wonText;
+    private JButton restartButton;
 
     private Color moveColor = new Color(100, 122, 179);
     private Color placeColor = new Color(179, 100, 164);
@@ -92,14 +93,21 @@ public class UI extends JFrame {
         gamePanel.setAlignmentX(0.5f);
         gamePanel.setAlignmentY(0.5f);
 
-        JPanel gameOverScreen = new JPanel();
-        gameOverScreen.setBackground(new Color(100, 100, 100, 150));
+        gameOverScreen = new JPanel(new GridBagLayout());
+        gameOverScreen.setBackground(new Color(100, 100, 100, 200));
         gameOverScreen.setAlignmentX(0.5f);
         gameOverScreen.setAlignmentY(0.5f);
         gameOverScreen.setVisible(false);
 
-        JLabel wonText = new JLabel();
+        wonText = new JLabel();
+        wonText.setFont(new Font("Sans-Serif", Font.BOLD, 36));
+        wonText.setHorizontalAlignment(JLabel.CENTER);
+        restartButton = new JButton("PLAY AGAIN");
+        restartButton.setFont(new Font("Sans-Serif", Font.BOLD, 14));
+        restartButton.addActionListener(e -> restartGame());
+
         gameOverScreen.add(wonText);
+        gameOverScreen.add(restartButton);
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new OverlayLayout(mainPanel));
@@ -119,6 +127,12 @@ public class UI extends JFrame {
         new UI();
     }
 
+    private void restartGame() {
+        logic = new GameLogic();
+        updateBoard();
+        gameOverScreen.setVisible(false);
+    }
+
     private void squareClicked(int x, int y) {
         Location clicked = new Location(x, y);
 
@@ -129,6 +143,12 @@ public class UI extends JFrame {
             moveResult = logic.movePiece(selectedPiece, clicked);
             clearSelection();
             updateBoard();
+            if (moveResult == MoveResult.GAME_OVER) {
+                gameOverScreen.setVisible(true);
+                GameStatus gameStatus = logic.getGameStatus();
+                String Text = ((gameStatus == GameStatus.BLACK) ? "Black" : "White") + "Won";
+                wonText.setText(Text);
+            }
             return;
         }
 
@@ -140,12 +160,7 @@ public class UI extends JFrame {
         } else {
             clearSelection();
         }
-        if (moveResult == MoveResult.GAME_OVER) {
-            gameOverScreen.setVisible(true);
-            GameStatus gameStatus = logic.getGameStatus();
-            String Text = ((gameStatus == GameStatus.BLACK) ? "Black" : "White") + "Won";
-            wonText.setText(Text);
-        }
+
         updateBoard();
     }
 
