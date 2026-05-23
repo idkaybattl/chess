@@ -19,5 +19,5 @@ public interface ChessGame {
 
     Board getBoard();
 
-    Player getCurrentPlayer();
+    ChessColor getCurrentPlayer();
 }

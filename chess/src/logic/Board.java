@@ -1,19 +1,16 @@
 package logic;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Optional;
-import logic.pieces.Bishop;
-import logic.pieces.King;
-import logic.pieces.Knight;
-import logic.pieces.Pawn;
-import logic.pieces.Piece;
-import logic.pieces.Queen;
-import logic.pieces.Rook;
+import logic.pieces.*;
 
 public class Board {
     private Square[][] squares;
+    private final EnumMap<ChessColor, HashMap<Class<? extends Piece>, ArrayList<Piece>>> piecesByColorAndType;
 
-    public Board(Player white, Player black) {
+    public Board() {
         squares = new Square[8][8];
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
@@ -21,39 +18,103 @@ public class Board {
             }
         }
 
-        setupPieces(white);
-        setupPieces(black);
+        piecesByColorAndType = new EnumMap(ChessColor.class);
+        piecesByColorAndType.put(ChessColor.WHITE, setupPieces(ChessColor.WHITE));
+        piecesByColorAndType.put(ChessColor.BLACK, setupPieces(ChessColor.BLACK));
     }
 
-    private void setupPieces(Player player) {
-        ChessColor color = player.getColor();
+    private HashMap<Class<? extends Piece>, ArrayList<Piece>> setupPieces(ChessColor color) {
         int backRank = color == ChessColor.WHITE ? 0 : 7;
         int pawnRank = color == ChessColor.WHITE ? 1 : 6;
 
-        Piece[] pieces = new Piece[] {
-                new Rook(new Location(0, backRank), color),
-                new Knight(new Location(1, backRank), color),
-                new Bishop(new Location(2, backRank), color),
-                new Queen(new Location(3, backRank), color),
-                new King(new Location(4, backRank), color),
-                new Bishop(new Location(5, backRank), color),
-                new Knight(new Location(6, backRank), color),
-                new Rook(new Location(7, backRank), color),
-                new Pawn(new Location(0, pawnRank), color),
-                new Pawn(new Location(1, pawnRank), color),
-                new Pawn(new Location(2, pawnRank), color),
-                new Pawn(new Location(3, pawnRank), color),
-                new Pawn(new Location(4, pawnRank), color),
-                new Pawn(new Location(5, pawnRank), color),
-                new Pawn(new Location(6, pawnRank), color),
-                new Pawn(new Location(7, pawnRank), color)
-        };
+        HashMap<Class<? extends Piece>, ArrayList<Piece>> piecesByType = new HashMap<>();
 
-        for (Piece piece : pieces) {
-            getSquare(piece.getPos()).setPiece(piece);
+        piecesByType.put(King.class, new ArrayList<Piece>()).add(new King(new Location(4, backRank), color));
+        piecesByType.put(Queen.class, new ArrayList<Piece>()).add(new Queen(new Location(3, backRank), color));
+        piecesByType.put(Rook.class, new ArrayList<Piece>());
+        piecesByType.put(Knight.class, new ArrayList<Piece>());
+        piecesByType.put(Bishop.class, new ArrayList<Piece>());
+        piecesByType.put(Pawn.class, new ArrayList<Piece>());
+
+        piecesByType.get(Rook.class).add(new Rook(new Location(0, backRank), color));
+        piecesByType.get(Rook.class).add(new Rook(new Location(7, backRank), color));
+        piecesByType.get(Knight.class).add(new Knight(new Location(1, backRank), color));
+        piecesByType.get(Knight.class).add(new Knight(new Location(6, backRank), color));
+        piecesByType.get(Bishop.class).add(new Bishop(new Location(2, backRank), color));
+        piecesByType.get(Bishop.class).add(new Bishop(new Location(5, backRank), color));
+
+        ArrayList<Piece> pawns = piecesByType.get(Pawn.class);
+        for (int i = 0; i < 8; i++) {
+            pawns.add(new Pawn(new Location(i, pawnRank), color));
         }
 
-        player.setPieces(pieces);
+        for (ArrayList<Piece> pieces : piecesByType.values()) {
+            for (Piece piece : pieces) {
+                getSquare(piece.getPos()).setPiece(piece);
+            }
+        }
+
+        return piecesByType;
+    }
+
+    public King getKing(ChessColor color) {
+        return (King) getPieces(color, King.class).get(0);
+    }
+
+    public ArrayList<Piece> getPieces(ChessColor color) {
+        ArrayList<Piece> pieces = new ArrayList<>();
+        for (ArrayList<Piece> piecesOfType : piecesByColorAndType.get(color).values()) {
+            pieces.addAll(piecesOfType);
+        }
+        return pieces;
+    }
+
+    public <T extends Piece> ArrayList<Piece> getPieces(ChessColor color, Class<? extends Piece> type) {
+        return piecesByColorAndType.get(color).get(type);
+    }
+
+    public ArrayList<Piece> getActivePieces(ChessColor color) {
+        ArrayList<Piece> pieces = new ArrayList<>();
+        for (ArrayList<Piece> piecesOfType : piecesByColorAndType.get(color).values()) {
+            for (Piece piece : piecesOfType) {
+                if (!piece.isTaken()) {
+                    pieces.add(piece);
+                }
+            }
+        }
+        return pieces;
+    }
+
+    public <T extends Piece> ArrayList<Piece> getActivePieces(ChessColor color, Class<? extends Piece> type) {
+        ArrayList<Piece> pieces = new ArrayList<>();
+        for (Piece piece : piecesByColorAndType.get(color).get(type)) {
+            if (!piece.isTaken()) {
+                pieces.add(piece);
+            }
+        }
+        return pieces;
+    }
+
+    public ArrayList<Piece> getTakenPieces(ChessColor color) {
+        ArrayList<Piece> pieces = new ArrayList<>();
+        for (ArrayList<Piece> piecesOfType : piecesByColorAndType.get(color).values()) {
+            for (Piece piece : piecesOfType) {
+                if (piece.isTaken()) {
+                    pieces.add(piece);
+                }
+            }
+        }
+        return pieces;
+    }
+
+    public <T extends Piece> ArrayList<Piece> getTakenPieces(ChessColor color, Class<? extends Piece> type) {
+        ArrayList<Piece> pieces = new ArrayList<>();
+        for (Piece piece : piecesByColorAndType.get(color).get(type)) {
+            if (piece.isTaken()) {
+                pieces.add(piece);
+            }
+        }
+        return pieces;
     }
 
     public Square[][] getSquares() {
@@ -92,11 +153,12 @@ public class Board {
         return pieces;
     }
 
-    public void castle(King king, boolean queenSide) {
+    public void castle(King king, boolean queenside) {
         int backrank = king.getPos().getX();
         Location newKingPos = new Location(((queenside) ? 2 : 6), backrank);
         Location newRookPos = new Location(((queenside) ? 3 : 5), backrank);
-        Rook rook = (queenSide) ? getPiece(0, backrank) : getPiece(7, backrank);
+        // unsafe: assumes that square contains rook
+        Rook rook = (Rook) ((queenside) ? getPiece(0, backrank).get() : getPiece(7, backrank).get());
 
         getSquare(newKingPos).setPiece(king);
         getSquare(newRookPos).setPiece(rook);
@@ -127,7 +189,7 @@ public class Board {
             getSquare(target).setPiece(piece);
         }
     }
-    
+
     public TempMove tempMove(Piece piece, Location target) {
         return tempMove(piece, target, target);
     }

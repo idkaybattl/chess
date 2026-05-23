@@ -6,30 +6,24 @@ import logic.pieces.Pawn;
 import logic.pieces.King;
 import logic.pieces.Rook;
 import logic.pieces.Piece;
-import logic.pieces.Bishop;
 
 public class GameLogic implements ChessGame {
-    Player white;
-    Player black;
-
-    Player currentPlayer;
+    ChessColor currentPlayer;
 
     ArrayList<Move> moveHistory;
 
     Board board;
 
     public GameLogic() {
-        white = new Player(ChessColor.WHITE);
-        black = new Player(ChessColor.BLACK);
         moveHistory = new ArrayList<>();
-        board = new Board(white, black);
-        currentPlayer = white;
+        board = new Board();
+        currentPlayer = ChessColor.WHITE;
     }
 
     public ArrayList<Location> availableMoves(Piece piece) {
         ArrayList<Location> validMoves = piece.getValidMoves(board);
 
-        Player player = (piece.getColor() == ChessColor.WHITE) ? white : black;
+        ChessColor player = piece.getColor();
 
         if (piece instanceof Pawn) {
             validMoves.addAll(getEnPassantMoves((Pawn) piece));
@@ -55,8 +49,8 @@ public class GameLogic implements ChessGame {
         return validMoves;
     }
 
-    public boolean anyMovesLeft(Player player) {
-        for (Piece piece : player.getActivePieces()) {
+    public boolean anyMovesLeft(ChessColor player) {
+        for (Piece piece : board.getActivePieces(player)) {
             if (availableMoves(piece).size() > 0) {
                 return true;
             }
@@ -98,12 +92,12 @@ public class GameLogic implements ChessGame {
         return moves;
     }
 
-    private ArrayList<Location> getCastleMoves(Player player) {
+    private ArrayList<Location> getCastleMoves(ChessColor player) {
         ArrayList<Location> castleMoves = new ArrayList<>();
-        Player otherPlayer = (player.getColor() == ChessColor.WHITE) ? black : white;
+        ChessColor otherPlayer = (player == ChessColor.WHITE) ? ChessColor.BLACK : ChessColor.WHITE;
 
-        if (!player.getKing().hasMoved()) {
-            int backrank = (player.getColor() == ChessColor.WHITE) ? 0 : 7;
+        if (!board.getKing(player).hasMoved()) {
+            int backrank = (player == ChessColor.WHITE) ? 0 : 7;
 
             Optional<Piece> qSideSquare = board.getPiece(0, backrank);
             Optional<Piece> kSideSquare = board.getPiece(7, backrank);
@@ -142,10 +136,10 @@ public class GameLogic implements ChessGame {
         return castleMoves;
     }
 
-    private ArrayList<Location> allAttackedSquares(Player player) {
+    private ArrayList<Location> allAttackedSquares(ChessColor player) {
         var attackedSquares = new ArrayList<Location>();
 
-        for (Piece piece : player.getActivePieces()) {
+        for (Piece piece : board.getActivePieces(player)) {
             attackedSquares.addAll(piece.getAttackedSquares(board));
         }
 
@@ -153,7 +147,7 @@ public class GameLogic implements ChessGame {
     }
 
     public MoveResult movePiece(Piece piece, Location target) {
-        if (currentPlayer.getColor() != piece.getColor()) {
+        if (currentPlayer != piece.getColor()) {
             return MoveResult.NOT_YOUR_TURN;
         }
 
@@ -177,7 +171,7 @@ public class GameLogic implements ChessGame {
         board.movePiece(piece, target, capturedLocation);
         moveHistory.add(new Move(piece, origin, target, capturedPiece.orElse(null), capturedLocation));
 
-        currentPlayer = (currentPlayer == white) ? black : white;
+        currentPlayer = (currentPlayer == ChessColor.WHITE) ? ChessColor.BLACK : ChessColor.WHITE;
         if (getGameStatus() != GameStatus.ONGOING) {
             return MoveResult.GAME_OVER;
         }
@@ -193,22 +187,35 @@ public class GameLogic implements ChessGame {
         // TODO:
         // Check for draws:
         // insufficient material
-                // only king / king + knight / king + bishop / king + 2 same colored bishops
-        //not only current player but both (am to stupid for that in 1 rn)
-        if (currentPlayer.getActivePieces(Queen).isEmpty() && currentPlayer.getActivePieces(Rook).isEmpty() ) {
-            if (currentPlayer.getActivePieces(Knight).size() < 2 && currentPlayer.getActivePieces(Bishop).isEmpty() ||
-                currentPlayer.getActivePieces(Knight).isEmpty() && currentPlayer.getActivePieces(Bishop).size() < 2 ||
-                currentPlayer.getActivePieces(Knight).isEmpty() && currentPlayer.getActivePieces(Bishop).size() < 3
-                    && currentPlayer.getActivePieces(Bishop).get(0).getSquareColor() == currentPlayer.getActivePieces(Bishop).get(1).getSquareColor()){
 
+        // if (whiteQueens.isEmpty() && whiteRooks.isEmpty() && whitePawns.isEmpty())
 
-                    }
+        /*
+         * // only king / king + knight / king + bishop / king + 2 same colored bishops
+         * //not only current player but both (am to stupid for that in 1 rn)
+         * if (currentPlayer.getActivePieces(Queen).isEmpty() &&
+         * currentPlayer.getActivePieces(Rook).isEmpty() &&
+         * currentPlayer.getActivePieces(Pawn).isEmpty()) {
+         * if (currentPlayer.getActivePieces(Knight).size() < 2 &&
+         * currentPlayer.getActivePieces(Bishop).isEmpty() ||
+         * currentPlayer.getActivePieces(Knight).isEmpty() &&
+         * currentPlayer.getActivePieces(Bishop).size() < 2 ||
+         * currentPlayer.getActivePieces(Knight).isEmpty() &&
+         * currentPlayer.getActivePieces(Bishop).size() < 3
+         * && currentPlayer.getActivePieces(Bishop).get(0).getSquareColor() ==
+         * currentPlayer.getActivePieces(Bishop).get(1).getSquareColor()){
+         *
+         *
+         * }
+         * }
+         */
+
         // 50 moves
         // repetition
 
         if (!anyMovesLeft(currentPlayer)) {
             if (inCheck(currentPlayer)) {
-                return currentPlayer == white ? GameStatus.BLACK : GameStatus.WHITE;
+                return currentPlayer == ChessColor.WHITE ? GameStatus.BLACK : GameStatus.WHITE;
             } else {
                 return GameStatus.DRAW;
             }
@@ -217,12 +224,13 @@ public class GameLogic implements ChessGame {
         return GameStatus.ONGOING;
     }
 
-    private boolean inCheck(Player player) {
-        Player enemy = (player.getColor() == ChessColor.WHITE) ? black : white;
+    private boolean inCheck(ChessColor player) {
+        ChessColor enemy = (player == ChessColor.WHITE) ? ChessColor.BLACK : ChessColor.WHITE;
         ArrayList<Location> attackedLocations = allAttackedSquares(enemy);
 
         for (Location attackedLocation : attackedLocations) {
-            if (getPieceAt(attackedLocation).isPresent() && getPieceAt(attackedLocation).get() == player.getKing()) {
+            if (getPieceAt(attackedLocation).isPresent()
+                    && getPieceAt(attackedLocation).get() == board.getKing(player)) {
                 return true;
             }
         }
@@ -250,10 +258,7 @@ public class GameLogic implements ChessGame {
         return board;
     }
 
-    public Player getCurrentPlayer() {
+    public ChessColor getCurrentPlayer() {
         return currentPlayer;
     }
-
-
 }
-

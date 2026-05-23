@@ -24,4 +24,7 @@ public class Queen extends Piece {
         return moves;
     }
 
+    public PieceType getType() {
+        return PieceType.QUEEN;
+    }
 }

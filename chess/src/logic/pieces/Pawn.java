@@ -61,4 +61,8 @@ public class Pawn extends Piece {
 
         return moves;
     }
+
+    public PieceType getType() {
+        return PieceType.PAWN;
+    }
 }

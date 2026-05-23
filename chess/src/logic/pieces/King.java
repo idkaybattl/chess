@@ -26,4 +26,7 @@ public class King extends Piece {
         return moves;
     }
 
+    public PieceType getType() {
+        return PieceType.KING;
+    }
 }

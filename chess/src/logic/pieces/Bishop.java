@@ -20,9 +20,11 @@ public class Bishop extends Piece {
     }
 
     public boolean getSquareColor() {
-        return (getX() + getY() % 2 == 0;
-        //true = dark Square Bishop
+        return ((position.getX() + position.getY()) % 2 == 0);
+        // true = dark Square Bishop
     }
 
-
+    public PieceType getType() {
+        return PieceType.BISHOP;
+    }
 }

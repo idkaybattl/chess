@@ -4,10 +4,10 @@ import logic.*;
 import java.util.ArrayList;
 
 public abstract class Piece {
-    private Location position;
-    private ChessColor color;
-    private boolean taken;
-    private boolean hasMoved;
+    protected Location position;
+    protected ChessColor color;
+    protected boolean taken;
+    protected boolean hasMoved;
 
     public Piece(Location position, ChessColor color) {
         this.taken = false;
@@ -112,4 +112,5 @@ public abstract class Piece {
         return (x >= 0 && x < 8 && y >= 0 && y < 8);
     }
 
+    public abstract PieceType getType();
 }

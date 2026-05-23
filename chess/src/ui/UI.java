@@ -6,7 +6,6 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import javax.swing.JFrame;
-import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.JButton;
 
@@ -94,7 +93,7 @@ public class UI extends JFrame {
         Optional<Piece> clickedPiece = logic.getPieceAt(clicked);
 
         if (clickedPiece.isPresent()
-                && clickedPiece.get().getColor() == logic.getCurrentPlayer().getColor()) {
+                && clickedPiece.get().getColor() == logic.getCurrentPlayer()) {
             selectSquare(clicked, clickedPiece.get());
         } else {
             clearSelection();

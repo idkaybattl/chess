@@ -25,4 +25,8 @@ public class Knight extends Piece {
 
         return moves;
     }
+
+    public PieceType getType() {
+        return PieceType.KNIGHT;
+    }
 }

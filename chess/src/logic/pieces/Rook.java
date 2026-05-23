@@ -19,4 +19,7 @@ public class Rook extends Piece {
         return moves;
     }
 
+    public PieceType getType() {
+        return PieceType.ROOK;
+    }
 }
