@@ -275,6 +275,8 @@ public class GameLogic implements ChessGame {
         return GameStatus.ONGOING;
     }
 
+
+
     public boolean inCheck(ChessColor player) {
         ChessColor enemy = (player == ChessColor.WHITE) ? ChessColor.BLACK : ChessColor.WHITE;
         ArrayList<Location> attackedLocations = allAttackedSquares(enemy);
