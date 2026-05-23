@@ -30,13 +30,15 @@ public class Board {
 
         HashMap<Class<? extends Piece>, ArrayList<Piece>> piecesByType = new HashMap<>();
 
-        piecesByType.put(King.class, new ArrayList<Piece>()).add(new King(new Location(4, backRank), color));
-        piecesByType.put(Queen.class, new ArrayList<Piece>()).add(new Queen(new Location(3, backRank), color));
+        piecesByType.put(King.class, new ArrayList<Piece>());
+        piecesByType.put(Queen.class, new ArrayList<Piece>());
         piecesByType.put(Rook.class, new ArrayList<Piece>());
         piecesByType.put(Knight.class, new ArrayList<Piece>());
         piecesByType.put(Bishop.class, new ArrayList<Piece>());
         piecesByType.put(Pawn.class, new ArrayList<Piece>());
 
+        piecesByType.get(King.class).add(new King(new Location(4, backRank), color));
+        piecesByType.get(Queen.class).add(new Queen(new Location(3, backRank), color));
         piecesByType.get(Rook.class).add(new Rook(new Location(0, backRank), color));
         piecesByType.get(Rook.class).add(new Rook(new Location(7, backRank), color));
         piecesByType.get(Knight.class).add(new Knight(new Location(1, backRank), color));
@@ -170,7 +172,7 @@ public class Board {
     }
 
     public void castle(King king, boolean queenside) {
-        int backrank = king.getPos().getX();
+        int backrank = king.getPos().getY();
         Location newKingPos = new Location(((queenside) ? 2 : 6), backrank);
         Location newRookPos = new Location(((queenside) ? 3 : 5), backrank);
         // unsafe: assumes that square contains rook

@@ -253,26 +253,6 @@ public class GameLogic implements ChessGame {
             return GameStatus.DRAW;
         }
 
-        /*
-         * // only king / king + knight / king + bishop / king + 2 same colored bishops
-         * //not only current player but both (am to stupid for that in 1 rn)
-         * if (currentPlayer.getActivePieces(Queen).isEmpty() &&
-         * currentPlayer.getActivePieces(Rook).isEmpty() &&
-         * currentPlayer.getActivePieces(Pawn).isEmpty()) {
-         * if (currentPlayer.getActivePieces(Knight).size() < 2 &&
-         * currentPlayer.getActivePieces(Bishop).isEmpty() ||
-         * currentPlayer.getActivePieces(Knight).isEmpty() &&
-         * currentPlayer.getActivePieces(Bishop).size() < 2 ||
-         * currentPlayer.getActivePieces(Knight).isEmpty() &&
-         * currentPlayer.getActivePieces(Bishop).size() < 3
-         * && currentPlayer.getActivePieces(Bishop).get(0).getSquareColor() ==
-         * currentPlayer.getActivePieces(Bishop).get(1).getSquareColor()){
-         *
-         *
-         * }
-         * }
-         */
-
         // 50 moves
         // repetition
 

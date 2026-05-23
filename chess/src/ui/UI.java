@@ -12,9 +12,9 @@ import javax.swing.JButton;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import logic.GameLogic;
 import logic.ChessColor;
 import logic.ChessGame;
-import logic.GameLogic;
 import logic.Location;
 import logic.pieces.*;
 
