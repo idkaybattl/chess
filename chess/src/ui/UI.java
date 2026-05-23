@@ -1,25 +1,17 @@
 package ui;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.net.URL;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.event.*;
-
-import javax.swing.JFrame;
-import javax.swing.border.LineBorder;
-import javax.swing.JButton;
-
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Optional;
-
-import logic.GameLogic;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
 import logic.ChessColor;
 import logic.ChessGame;
+import logic.GameLogic;
 import logic.Location;
 import logic.pieces.*;
 
@@ -31,6 +23,9 @@ public class UI extends JFrame {
     private JButton[][] squares = new JButton[8][8];
 
     private final EnumMap<ChessColor, HashMap<String, ImageIcon>> icons;
+
+    private Color moveColor = new Color(100, 122, 179);
+    private Color placeColor = new Color(179, 100, 164);
 
     public UI() {
         super();
@@ -140,10 +135,10 @@ public class UI extends JFrame {
         button.setBackground(light ? Color.DARK_GRAY : Color.LIGHT_GRAY);
 
         if (location.equals(selectedSquare)) {
-            button.setBorder(new LineBorder(Color.YELLOW, 2));
+            button.setBorder(new LineBorder(placeColor, 2));
             button.setBorderPainted(true);
         } else if (highlightedMoves.contains(location)) {
-            button.setBorder(new LineBorder(Color.GREEN, 2));
+            button.setBorder(new LineBorder(moveColor, 2));
             button.setBorderPainted(true);
         } else {
             button.setBorderPainted(false);
