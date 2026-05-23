@@ -13,6 +13,8 @@ public interface ChessGame {
 
     GameStatus getGameStatus();
 
+    boolean inCheck(ChessColor player);
+
     Optional<Piece> getPieceAt(Location location);
 
     Optional<Piece> getPieceAt(int x, int y);
