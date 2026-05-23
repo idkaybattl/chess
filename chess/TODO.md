@@ -1,0 +1,4 @@
+- one king happy, other one being executed (hanged) when lost
+- Großgrundbesitzer
+- alt piece designs (e.g. arda and googins, trump and obama ...) (fishes)
+- stokfish

@@ -242,4 +242,8 @@ public class Board {
             getSquare(move.getCapturedLocation()).setPiece(piece);
         }
     }
+
+    public SimplePiece simplifyBoard() {
+        Class<? extends Piece>[][] board = new Class<? extends Piece>[8][8];
+    }
 }

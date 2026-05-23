@@ -15,6 +15,7 @@ public class GameLogic implements ChessGame {
     ChessColor currentPlayer;
 
     ArrayList<Move> moveHistory;
+    ArrayList<Class<? extends Piece>[][]> boardHistory;
 
     Board board;
 
@@ -256,9 +257,16 @@ public class GameLogic implements ChessGame {
         // 50 moves
         // repetition
 
-        if (!anyMovesLeft(currentPlayer)) {
-            if (inCheck(currentPlayer)) {
-                return currentPlayer == ChessColor.WHITE ? GameStatus.BLACK : GameStatus.WHITE;
+        if (!anyMovesLeft(ChessColor.WHITE)) {
+            if (inCheck(ChessColor.WHITE)) {
+                return GameStatus.BLACK;
+            } else {
+                return GameStatus.DRAW;
+            }
+        }
+        if (!anyMovesLeft(ChessColor.BLACK)) {
+            if (inCheck(ChessColor.BLACK)) {
+                return GameStatus.WHITE;
             } else {
                 return GameStatus.DRAW;
             }

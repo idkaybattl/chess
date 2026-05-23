@@ -30,7 +30,7 @@ public class UI extends JFrame {
     private java.util.List<Location> highlightedMoves = new ArrayList<>();
     private JButton[][] squares = new JButton[8][8];
 
-    private final EnumMap<ChessColor, HashMap<String, ImageIcon>> icons;
+    private final EnumMap<ChessColor, HashMap<String, Image>> icons;
 
     public UI() {
         super();
@@ -54,7 +54,10 @@ public class UI extends JFrame {
         setTitle("dada");
         setResizable(false);
 
-        JMenuBar menu = new JMenuBar();
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("Test");
+        menuBar.add(menu);
+
         JPanel boardPanel = new JPanel(new GridLayout(8, 8));
         boardPanel.setPreferredSize(new Dimension(640, 640));
 
@@ -85,6 +88,7 @@ public class UI extends JFrame {
         }
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.add(menuBar);
         mainPanel.add(boardPanel);
 
         setContentPane(mainPanel);
@@ -127,7 +131,6 @@ public class UI extends JFrame {
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 updateSquare(x, y);
-
             }
         }
     }
@@ -155,20 +158,20 @@ public class UI extends JFrame {
             ChessColor color = piece.getColor();
             if (piece instanceof King) {
                 if (logic.inCheck(color)) {
-                    button.setIcon(icons.get(color).get("king-scared"));
+                    button.setIcon(new ImageIcon(icons.get(color).get("king-scared")));
                 } else {
-                    button.setIcon(icons.get(color).get("king"));
+                    button.setIcon(new ImageIcon(icons.get(color).get("king")));
                 }
             } else if (piece instanceof Queen) {
-                button.setIcon(icons.get(color).get("queen"));
+                button.setIcon(new ImageIcon(icons.get(color).get("queen")));
             } else if (piece instanceof Rook) {
-                button.setIcon(icons.get(color).get("rook"));
+                button.setIcon(new ImageIcon(icons.get(color).get("rook")));
             } else if (piece instanceof Knight) {
-                button.setIcon(icons.get(color).get("knight"));
+                button.setIcon(new ImageIcon(icons.get(color).get("knight")));
             } else if (piece instanceof Bishop) {
-                button.setIcon(icons.get(color).get("bishop"));
+                button.setIcon(new ImageIcon(icons.get(color).get("bishop")));
             } else if (piece instanceof Pawn) {
-                button.setIcon(icons.get(color).get("pawn"));
+                button.setIcon(new ImageIcon(icons.get(color).get("pawn")));
             }
 
             // button.setText(((piece.getColor() == ChessColor.WHITE) ? "W" : "B") +
@@ -179,7 +182,7 @@ public class UI extends JFrame {
         }
     }
 
-    private ImageIcon getIcon(ChessColor color, String iconName) {
+    private Image getIcon(ChessColor color, String iconName) {
         try {
             String path = "/icons/" + iconName + (color == ChessColor.WHITE ? "-white.png" : "-black.png");
             URL resource = UI.class.getResource(path);
@@ -189,12 +192,12 @@ public class UI extends JFrame {
             }
 
             Image img = ImageIO.read(resource);
-            Image scaled = img.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+            Image scaled = img.getScaledInstance(76, 76, Image.SCALE_SMOOTH);
 
-            return new ImageIcon(scaled);
+            return scaled;
         } catch (Exception ex) {
             System.out.println(ex);
-            return new ImageIcon();
+            return null;
         }
     }
 
