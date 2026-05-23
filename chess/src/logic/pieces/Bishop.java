@@ -19,4 +19,10 @@ public class Bishop extends Piece {
         return moves;
     }
 
+    public boolean getSquareColor() {
+        return (getX() + getY() % 2 == 0;
+        //true = dark Square Bishop
+    }
+
+
 }

@@ -92,24 +92,42 @@ public class Board {
         return pieces;
     }
 
+    public void castle(King king, boolean queenSide) {
+        int backrank = king.getPos().getX();
+        Location newKingPos = new Location(((queenside) ? 2 : 6), backrank);
+        Location newRookPos = new Location(((queenside) ? 3 : 5), backrank);
+        Rook rook = (queenSide) ? getPiece(0, backrank) : getPiece(7, backrank);
+
+        getSquare(newKingPos).setPiece(king);
+        getSquare(newRookPos).setPiece(rook);
+        getSquare(king.getPos()).removePiece();
+        getSquare(rook.getPos()).removePiece();
+        king.move(newKingPos);
+        rook.move(newRookPos);
+    }
+
     public void movePiece(Piece piece, Location target) {
         movePiece(piece, target, target);
     }
 
     public void movePiece(Piece piece, Location target, Location capturedLocation) {
-        Optional<Piece> capturedPiece = getPiece(capturedLocation);
+        if (piece instanceof King && Math.abs(target.getX() - piece.getPos().getX()) == 2) {
+            castle((King) piece, (target.getX() == 2));
+        } else {
+            Optional<Piece> capturedPiece = getPiece(capturedLocation);
 
-        if (capturedPiece.isPresent()) {
-            capturedPiece.get().take();
-            getSquare(capturedLocation).removePiece();
+            if (capturedPiece.isPresent()) {
+                capturedPiece.get().take();
+                getSquare(capturedLocation).removePiece();
+            }
+
+            Location origin = new Location(piece.getPos());
+            getSquare(origin).removePiece();
+            piece.move(new Location(target));
+            getSquare(target).setPiece(piece);
         }
-
-        Location origin = new Location(piece.getPos());
-        getSquare(origin).removePiece();
-        piece.move(new Location(target));
-        getSquare(target).setPiece(piece);
     }
-
+    
     public TempMove tempMove(Piece piece, Location target) {
         return tempMove(piece, target, target);
     }
