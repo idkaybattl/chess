@@ -19,7 +19,7 @@ public class Board {
             }
         }
 
-        piecesByColorAndType = new EnumMap(ChessColor.class);
+        piecesByColorAndType = new EnumMap<>(ChessColor.class);
         piecesByColorAndType.put(ChessColor.WHITE, setupPieces(ChessColor.WHITE));
         piecesByColorAndType.put(ChessColor.BLACK, setupPieces(ChessColor.BLACK));
     }
@@ -80,8 +80,13 @@ public class Board {
         return pieces;
     }
 
-    public <T extends Piece> ArrayList<T> getPieces(ChessColor color, Class<? extends Piece> type) {
-        return (ArrayList<T>) piecesByColorAndType.get(color).get(type);
+    public <T extends Piece> ArrayList<T> getPieces(ChessColor color, Class<T> type) {
+        ArrayList<T> pieces = new ArrayList<>();
+
+        for (Piece piece : piecesByColorAndType.get(color).get(type)) {
+            pieces.add(type.cast(piece));
+        }
+        return pieces;
     }
 
     public ArrayList<Piece> getActivePieces(ChessColor color) {
@@ -96,11 +101,11 @@ public class Board {
         return pieces;
     }
 
-    public <T extends Piece> ArrayList<T> getActivePieces(ChessColor color, Class<? extends Piece> type) {
+    public <T extends Piece> ArrayList<T> getActivePieces(ChessColor color, Class<T> type) {
         ArrayList<T> pieces = new ArrayList<>();
         for (Piece piece : piecesByColorAndType.get(color).get(type)) {
             if (!piece.isTaken()) {
-                pieces.add((T) piece);
+                pieces.add(type.cast(piece));
             }
         }
         return pieces;
@@ -118,11 +123,11 @@ public class Board {
         return pieces;
     }
 
-    public <T extends Piece> ArrayList<Piece> getTakenPieces(ChessColor color, Class<? extends Piece> type) {
-        ArrayList<Piece> pieces = new ArrayList<>();
+    public <T extends Piece> ArrayList<T> getTakenPieces(ChessColor color, Class<T> type) {
+        ArrayList<T> pieces = new ArrayList<>();
         for (Piece piece : piecesByColorAndType.get(color).get(type)) {
             if (piece.isTaken()) {
-                pieces.add(piece);
+                pieces.add(type.cast(piece));
             }
         }
         return pieces;
