@@ -216,10 +216,27 @@ public class GameLogic implements ChessGame {
                             || opponentUniquePieces.contains(Pawn.class))) {
                 return false;
             }
+
             // King + bishop against king + any(knight, pawn) is sufficient.
+            if (uniquePieces.contains(Bishop.class)
+                    && (opponentUniquePieces.contains(Knight.class)
+                            || opponentUniquePieces.contains(Pawn.class))) {
+                return false;
+            }
+
             // King + bishop(s) is also sufficient if there's bishops on opposite colours
             // (even king + bishop against king + bishop).
+            ArrayList<Bishop> bishops = board.getActivePieces(player, Bishop.class);
+            bishops.addAll(board.getActivePieces(otherPlayer, Bishop.class));
+            HashSet<Boolean> bishopColors = new HashSet<>();
+            for (Bishop bishop : bishops) {
+                bishopColors.add(bishop.getSquareColor());
+            }
+            if (bishopColors.size() == 2) {
+                return false;
+            }
 
+            // none of the sufficient material conditions are given
             return true;
         }
 

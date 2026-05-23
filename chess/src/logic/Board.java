@@ -80,8 +80,8 @@ public class Board {
         return pieces;
     }
 
-    public <T extends Piece> ArrayList<Piece> getPieces(ChessColor color, Class<? extends Piece> type) {
-        return piecesByColorAndType.get(color).get(type);
+    public <T extends Piece> ArrayList<T> getPieces(ChessColor color, Class<? extends Piece> type) {
+        return (ArrayList<T>) piecesByColorAndType.get(color).get(type);
     }
 
     public ArrayList<Piece> getActivePieces(ChessColor color) {
@@ -96,11 +96,11 @@ public class Board {
         return pieces;
     }
 
-    public <T extends Piece> ArrayList<Piece> getActivePieces(ChessColor color, Class<? extends Piece> type) {
-        ArrayList<Piece> pieces = new ArrayList<>();
+    public <T extends Piece> ArrayList<T> getActivePieces(ChessColor color, Class<? extends Piece> type) {
+        ArrayList<T> pieces = new ArrayList<>();
         for (Piece piece : piecesByColorAndType.get(color).get(type)) {
             if (!piece.isTaken()) {
-                pieces.add(piece);
+                pieces.add((T) piece);
             }
         }
         return pieces;
