@@ -187,7 +187,7 @@ public class GameLogic implements ChessGame {
         return movePiece(piece, new Location(x, y));
     }
 
-    private boolean insufficientMaterial(ChessColor player) {
+    private boolean hasInsufficientMaterial(ChessColor player) {
         ChessColor otherPlayer = (player == ChessColor.WHITE) ? ChessColor.BLACK : ChessColor.WHITE;
 
         var uniquePieces = board.uniquePieces(player);
@@ -203,6 +203,7 @@ public class GameLogic implements ChessGame {
 
             // A king and more than one other type of piece is sufficient (e.g. knight +
             // bishop).
+            // i.e. there are at least three different pieces: king + two others
             if (uniquePieces.size() >= 3) {
                 return false;
             }
@@ -248,7 +249,7 @@ public class GameLogic implements ChessGame {
         // Check for draws:
         // insufficient material
 
-        if (insufficientMaterial(ChessColor.WHITE) || insufficientMaterial(ChessColor.BLACK)) {
+        if (hasInsufficientMaterial(ChessColor.WHITE) && hasInsufficientMaterial(ChessColor.BLACK)) {
             return GameStatus.DRAW;
         }
 
