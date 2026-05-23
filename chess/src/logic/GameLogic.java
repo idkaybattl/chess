@@ -248,24 +248,28 @@ public class GameLogic implements ChessGame {
         // TODO:
         // Check for draws:
         // insufficient material
-
+        
         if (hasInsufficientMaterial(ChessColor.WHITE) && hasInsufficientMaterial(ChessColor.BLACK)) {
             return GameStatus.DRAW;
         }
 
         // 50 moves
-        // repetition
+        // repetition 
 
-        if (!anyMovesLeft(currentPlayer)) {
-            if (inCheck(currentPlayer)) {
-                return currentPlayer == ChessColor.WHITE ? GameStatus.BLACK : GameStatus.WHITE;
-            } else {
+        if (!anyMovesLeft(ChessColor.WHITE) && inCheck(ChessColor.WHITE)){
+            return GameStatus.BLACK;
+            }
+            else if (!anyMovesLeft(ChessColor.BLACK) && inCheck(ChessColor.BLACK)){
+                return GameStatus.WHITE;
+            }
+            else {
                 return GameStatus.DRAW;
             }
+            return GameStatus.ONGOING;
         }
-
-        return GameStatus.ONGOING;
-    }
+        
+    
+        
 
     public boolean inCheck(ChessColor player) {
         ChessColor enemy = (player == ChessColor.WHITE) ? ChessColor.BLACK : ChessColor.WHITE;

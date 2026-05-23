@@ -12,7 +12,9 @@ import javax.swing.border.LineBorder;
 import logic.ChessColor;
 import logic.ChessGame;
 import logic.GameLogic;
+import logic.GameStatus;
 import logic.Location;
+import logic.MoveResult;
 import logic.pieces.*;
 
 public class UI extends JFrame {
@@ -23,6 +25,9 @@ public class UI extends JFrame {
     private JButton[][] squares = new JButton[8][8];
 
     private final EnumMap<ChessColor, HashMap<String, ImageIcon>> icons;
+
+    private JPanel gameOverScreen;
+    private JLabel wonText;
 
     private Color moveColor = new Color(100, 122, 179);
     private Color placeColor = new Color(179, 100, 164);
@@ -78,9 +83,28 @@ public class UI extends JFrame {
                 boardPanel.add(squares[x][y]);
             }
         }
+        
+        JPanel gamePanel = new JPanel(new GridBagLayout());
+        gamePanel.add(boardPanel);
+        gamePanel.setAlignmentX(0.5f);
+        gamePanel.setAlignmentY(0.5f);
 
-        JPanel mainPanel = new JPanel(new GridBagLayout());
-        mainPanel.add(boardPanel);
+        
+
+        JPanel gameOverScreen = new JPanel();
+        gameOverScreen.setBackground(new Color(100,100,100,150));
+        gameOverScreen.setAlignmentX(0.5f);
+        gameOverScreen.setAlignmentY(0.5f);
+        gameOverScreen.setVisible(false);
+        
+
+        JLabel wonText = new JLabel();
+        gameOverScreen.add(wonText);
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new OverlayLayout(mainPanel));
+        mainPanel.add(gamePanel);
+        setGlassPane(gameOverScreen);
 
         setContentPane(mainPanel);
         pack();
@@ -98,9 +122,11 @@ public class UI extends JFrame {
     private void squareClicked(int x, int y) {
         Location clicked = new Location(x, y);
 
+        MoveResult moveResult = MoveResult.MOVED;
+
         if (selectedSquare != null && highlightedMoves.contains(clicked)) {
             Piece selectedPiece = logic.getPieceAt(selectedSquare).orElseThrow();
-            logic.movePiece(selectedPiece, clicked);
+            moveResult = logic.movePiece(selectedPiece, clicked);
             clearSelection();
             updateBoard();
             return;
@@ -114,7 +140,12 @@ public class UI extends JFrame {
         } else {
             clearSelection();
         }
-
+        if (moveResult == MoveResult.GAME_OVER) {
+            gameOverScreen.setVisible(true);
+            GameStatus gameStatus = logic.getGameStatus();
+            String Text = ((gameStatus == GameStatus.BLACK) ? "Black" : "White") + "Won";
+            wonText.setText(Text);
+        }
         updateBoard();
     }
 
