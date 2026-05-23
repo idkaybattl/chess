@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
 import logic.pieces.Pawn;
+import logic.pieces.Bishop;
 import logic.pieces.King;
 import logic.pieces.Knight;
 import logic.pieces.Rook;
@@ -189,10 +190,11 @@ public class GameLogic implements ChessGame {
     private boolean insufficientMaterial(ChessColor player) {
         ChessColor otherPlayer = (player == ChessColor.WHITE) ? ChessColor.BLACK : ChessColor.WHITE;
 
+        var uniquePieces = board.uniquePieces(player);
         // A king + any(pawn, rook, queen) is sufficient.
-        if (board.getActivePieces(ChessColor.WHITE, Queen.class).isEmpty()
-                && board.getActivePieces(player, Rook.class).isEmpty()
-                && board.getActivePieces(player, Pawn.class).isEmpty()) {
+        if (!uniquePieces.contains(Queen.class)
+                && !uniquePieces.contains(Rook.class)
+                && !uniquePieces.contains(Pawn.class)) {
 
             // A king and two (or more) knights is sufficient.
             if (board.getActivePieces(player, Knight.class).size() >= 2) {
@@ -201,19 +203,19 @@ public class GameLogic implements ChessGame {
 
             // A king and more than one other type of piece is sufficient (e.g. knight +
             // bishop).
-            ArrayList<Piece> activePieces = board.getActivePieces(player);
-            if (activePieces.size() >= 3) {
-                // are there 3 different pieces
-                HashSet<Class<? extends Piece>> uniquePieces = new HashSet<>();
-                for (Piece activePiece : activePieces) {
-                    uniquePieces.add(activePiece.getClass());
-                    if (uniquePieces.size() >= 3) {
-                        return false;
-                    }
-                }
+            if (uniquePieces.size() >= 3) {
+                return false;
             }
 
+            var opponentUniquePieces = board.uniquePieces(otherPlayer);
             // King + knight against king + any(rook, bishop, knight, pawn) is sufficient.
+            if (uniquePieces.contains(Knight.class)
+                    && (opponentUniquePieces.contains(Rook.class)
+                            || opponentUniquePieces.contains(Bishop.class)
+                            || opponentUniquePieces.contains(Knight.class)
+                            || opponentUniquePieces.contains(Pawn.class))) {
+                return false;
+            }
             // King + bishop against king + any(knight, pawn) is sufficient.
             // King + bishop(s) is also sufficient if there's bishops on opposite colours
             // (even king + bishop against king + bishop).

@@ -3,6 +3,7 @@ package logic;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Optional;
 import logic.pieces.*;
 
@@ -59,6 +60,16 @@ public class Board {
 
     public King getKing(ChessColor color) {
         return (King) getPieces(color, King.class).get(0);
+    }
+
+    public HashSet<Class<? extends Piece>> uniquePieces(ChessColor color) {
+        ArrayList<Piece> activePieces = getActivePieces(color);
+        HashSet<Class<? extends Piece>> uniquePieces = new HashSet<>();
+        for (Piece activePiece : activePieces) {
+            uniquePieces.add(activePiece.getClass());
+        }
+
+        return uniquePieces;
     }
 
     public ArrayList<Piece> getPieces(ChessColor color) {
