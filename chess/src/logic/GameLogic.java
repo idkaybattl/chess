@@ -1,11 +1,14 @@
 package logic;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Optional;
 import logic.pieces.Pawn;
 import logic.pieces.King;
+import logic.pieces.Knight;
 import logic.pieces.Rook;
 import logic.pieces.Piece;
+import logic.pieces.Queen;
 
 public class GameLogic implements ChessGame {
     ChessColor currentPlayer;
@@ -183,12 +186,52 @@ public class GameLogic implements ChessGame {
         return movePiece(piece, new Location(x, y));
     }
 
+    private boolean insufficientMaterial(ChessColor player) {
+        ChessColor otherPlayer = (player == ChessColor.WHITE) ? ChessColor.BLACK : ChessColor.WHITE;
+
+        // A king + any(pawn, rook, queen) is sufficient.
+        if (board.getActivePieces(ChessColor.WHITE, Queen.class).isEmpty()
+                && board.getActivePieces(player, Rook.class).isEmpty()
+                && board.getActivePieces(player, Pawn.class).isEmpty()) {
+
+            // A king and two (or more) knights is sufficient.
+            if (board.getActivePieces(player, Knight.class).size() >= 2) {
+                return false;
+            }
+
+            // A king and more than one other type of piece is sufficient (e.g. knight +
+            // bishop).
+            ArrayList<Piece> activePieces = board.getActivePieces(player);
+            if (activePieces.size() >= 3) {
+                // are there 3 different pieces
+                HashSet<Class<? extends Piece>> uniquePieces = new HashSet<>();
+                for (Piece activePiece : activePieces) {
+                    uniquePieces.add(activePiece.getClass());
+                    if (uniquePieces.size() >= 3) {
+                        return false;
+                    }
+                }
+            }
+
+            // King + knight against king + any(rook, bishop, knight, pawn) is sufficient.
+            // King + bishop against king + any(knight, pawn) is sufficient.
+            // King + bishop(s) is also sufficient if there's bishops on opposite colours
+            // (even king + bishop against king + bishop).
+
+            return true;
+        }
+
+        return false;
+    }
+
     public GameStatus getGameStatus() {
         // TODO:
         // Check for draws:
         // insufficient material
 
-        // if (whiteQueens.isEmpty() && whiteRooks.isEmpty() && whitePawns.isEmpty())
+        if (insufficientMaterial(ChessColor.WHITE) || insufficientMaterial(ChessColor.BLACK)) {
+            return GameStatus.DRAW;
+        }
 
         /*
          * // only king / king + knight / king + bishop / king + 2 same colored bishops
