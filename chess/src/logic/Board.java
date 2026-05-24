@@ -186,6 +186,21 @@ public class Board {
         rook.move(newRookPos);
     }
 
+    public <T extends Promotable> void promote(Pawn pawn, Class<T> type) {
+        try {
+            Location position = pawn.getPos();
+            T newPiece = type.getConstructor(Location.class, ChessColor.class).newInstance(position,
+                    pawn.getColor());
+
+            Square square = getSquare(position);
+            square.removePiece();
+            square.setPiece(newPiece);
+            newPiece.move(position);
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalArgumentException("Invalid promotion piece: " + type.getSimpleName(), e);
+        }
+    }
+
     public void movePiece(Piece piece, Location target) {
         movePiece(piece, target, target);
     }

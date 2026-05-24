@@ -1,6 +1,7 @@
 package logic;
 
-import logic.pieces.Piece;
+import logic.pieces.*;
+
 import java.util.Optional;
 
 public class Move {
@@ -9,21 +10,40 @@ public class Move {
     private Location target;
     private Piece capturedPiece;
     private Location capturedLocation;
+    private Class<? extends Promotable> promotion;
 
     public Move(Piece piece, Location start, Location target) {
-        this(piece, start, target, null, target);
+        this(piece, start, target, null, target, null);
     }
 
-    public Move(Piece piece, Location start, Location target, Piece capturedPiece, Location capturedLocation) {
+    public Move(Piece piece, Location start, Location target, Piece capturedPiece, Location capturedLocation,
+            Class<? extends Promotable> promotion) {
         this.piece = piece;
         this.start = new Location(start);
         this.target = new Location(target);
         this.capturedPiece = capturedPiece;
         this.capturedLocation = new Location(capturedLocation);
+        this.promotion = promotion;
+    }
+
+    private String promotionString() {
+        if (promotion != null) {
+            if (promotion == Queen.class) {
+                return "Q";
+            } else if (promotion == Rook.class) {
+                return "R";
+            } else if (promotion == Knight.class) {
+                return "K";
+            } else {
+                return "B";
+            }
+        } else {
+            return "";
+        }
     }
 
     public String algebraicNotation() {
-        return (start.algebraicNotation() + target.algebraicNotation());
+        return (start.algebraicNotation() + target.algebraicNotation() + promotionString());
     }
 
     public Location getStart() {

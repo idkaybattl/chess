@@ -3,6 +3,8 @@ package logic;
 import java.util.Optional;
 import java.util.List;
 import logic.pieces.Piece;
+import logic.pieces.Promotable;
+import logic.pieces.Pawn;
 
 public interface ChessGame {
     List<Location> availableMoves(Piece piece);
@@ -10,6 +12,8 @@ public interface ChessGame {
     MoveResult movePiece(Piece piece, Location target);
 
     MoveResult movePiece(Piece piece, int x, int y);
+
+    MoveResult promote(Pawn pawn, Location origin, Location target, Class<? extends Promotable> type);
 
     GameStatus getGameStatus();
 

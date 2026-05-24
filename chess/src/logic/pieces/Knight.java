@@ -3,7 +3,7 @@ package logic.pieces;
 import logic.*;
 import java.util.ArrayList;
 
-public class Knight extends Piece {
+public class Knight extends Promotable {
 
     private static int[][] localMoves = { { -2, 1 }, { -2, -1 }, { -1, 2 }, { -1, -2 }, { 1, 2 }, { 1, -2 }, { 2, 1 },
             { 2, -1 } };

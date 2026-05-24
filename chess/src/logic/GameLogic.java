@@ -3,13 +3,7 @@ package logic;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
-import logic.pieces.Pawn;
-import logic.pieces.Bishop;
-import logic.pieces.King;
-import logic.pieces.Knight;
-import logic.pieces.Rook;
-import logic.pieces.Piece;
-import logic.pieces.Queen;
+import logic.pieces.*;
 
 public class GameLogic implements ChessGame {
     ChessColor currentPlayer;
@@ -216,6 +210,16 @@ public class GameLogic implements ChessGame {
         return null;
     }
 
+    public MoveResult promote(Pawn pawn, Location origin, Location target, Class<? extends Promotable> type) {
+        board.promote(pawn, type);
+
+        moveHistory.add(new Move((Piece) pawn, origin, target, null, target, type));
+
+        boardHistory.add(createSimplifiedPosition());
+
+        return MoveResult.MOVED;
+    }
+
     public MoveResult movePiece(Piece piece, Location target) {
         if (currentPlayer != piece.getColor()) {
             return MoveResult.NOT_YOUR_TURN;
@@ -237,7 +241,12 @@ public class GameLogic implements ChessGame {
         Optional<Piece> capturedPiece = board.getPiece(capturedLocation);
 
         board.movePiece(piece, target, capturedLocation);
-        moveHistory.add(new Move(piece, origin, target, capturedPiece.orElse(null), capturedLocation));
+
+        if (piece instanceof Pawn && (piece.getPos().getX() == 7 || piece.getPos().getX() == 0)) {
+            return MoveResult.PROMOTION;
+        }
+
+        moveHistory.add(new Move(piece, origin, target, capturedPiece.orElse(null), capturedLocation, null));
 
         if (piece instanceof Pawn || capturedPiece.isPresent()) {
             boardHistory = new ArrayList<>();

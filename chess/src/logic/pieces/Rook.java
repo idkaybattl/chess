@@ -3,7 +3,7 @@ package logic.pieces;
 import logic.*;
 import java.util.ArrayList;
 
-public class Rook extends Piece {
+public class Rook extends Promotable {
     public Rook(Location position, ChessColor color) {
         super(position, color);
     }
