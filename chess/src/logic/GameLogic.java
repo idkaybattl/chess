@@ -15,7 +15,8 @@ public class GameLogic implements ChessGame {
     ChessColor currentPlayer;
 
     ArrayList<Move> moveHistory;
-    ArrayList<Class<? extends Piece>[][]> boardHistory;
+    // since last pawn move or capture
+    ArrayList<SimplifiedPosition> boardHistory;
 
     Board board;
 
@@ -23,6 +24,7 @@ public class GameLogic implements ChessGame {
         moveHistory = new ArrayList<>();
         board = new Board();
         currentPlayer = ChessColor.WHITE;
+        boardHistory.add(createSimplifiedPosition());
     }
 
     public ArrayList<Location> availableMoves(Piece piece) {
@@ -151,6 +153,69 @@ public class GameLogic implements ChessGame {
         return attackedSquares;
     }
 
+    private SimplifiedPosition createSimplifiedPosition() {
+        // TODO
+        var whiteCastleMoves = getCastleMoves(ChessColor.WHITE);
+        var blackCastleMoves = getCastleMoves(ChessColor.BLACK);
+
+        boolean whiteKSideCastle = false;
+        boolean whiteQSideCastle = false;
+        if (whiteCastleMoves.size() >= 2) {
+            whiteKSideCastle = true;
+            whiteQSideCastle = true;
+        } else if (whiteCastleMoves.size() == 1) {
+            if (whiteCastleMoves.get(0).getX() == 6) {
+                whiteKSideCastle = true;
+            } else {
+                whiteQSideCastle = true;
+            }
+        }
+
+        boolean blackKSideCastle = false;
+        boolean blackQSideCastle = false;
+        if (blackCastleMoves.size() >= 2) {
+            blackKSideCastle = true;
+            blackQSideCastle = true;
+        } else if (blackCastleMoves.size() == 1) {
+            if (blackCastleMoves.get(0).getX() == 6) {
+                blackKSideCastle = true;
+            } else {
+                blackQSideCastle = true;
+            }
+        }
+
+        return new SimplifiedPosition(board.simplifyBoard(), currentPlayer, whiteKSideCastle, whiteQSideCastle,
+                blackKSideCastle, blackQSideCastle, getEnPassantTarget());
+    }
+
+    // null if not available
+    private Location getEnPassantTarget() {
+        if (moveHistory.size() > 0) {
+            Move lastMove = moveHistory.getLast();
+            Location start = lastMove.getStart();
+            Location target = lastMove.getTarget();
+
+            if (Math.abs(start.getY() - target.getY()) == 2) {
+                Optional<Piece> leftOptionalPiece = board.getPiece(target.getX() - 1, target.getY());
+                if (leftOptionalPiece.isPresent()) {
+                    Piece leftPiece = leftOptionalPiece.get();
+                    if (leftPiece instanceof Pawn && leftPiece.getColor() == currentPlayer) {
+                        return target;
+                    }
+                }
+                Optional<Piece> rightOptionalPiece = board.getPiece(target.getX() + 1, target.getY());
+                if (rightOptionalPiece.isPresent()) {
+                    Piece rightPiece = rightOptionalPiece.get();
+                    if (rightPiece instanceof Pawn && rightPiece.getColor() == currentPlayer) {
+                        return target;
+                    }
+                }
+            }
+
+        }
+        return null;
+    }
+
     public MoveResult movePiece(Piece piece, Location target) {
         if (currentPlayer != piece.getColor()) {
             return MoveResult.NOT_YOUR_TURN;
@@ -171,10 +236,14 @@ public class GameLogic implements ChessGame {
         Location capturedLocation = getCapturedLocation(piece, target);
         Optional<Piece> capturedPiece = board.getPiece(capturedLocation);
 
-        // TODO: extra case for castling
-        // add board.castle(king, rook)
         board.movePiece(piece, target, capturedLocation);
         moveHistory.add(new Move(piece, origin, target, capturedPiece.orElse(null), capturedLocation));
+
+        if (piece instanceof Pawn || capturedPiece.isPresent()) {
+            boardHistory = new ArrayList<>();
+        } else {
+            boardHistory.add(createSimplifiedPosition());
+        }
 
         currentPlayer = (currentPlayer == ChessColor.WHITE) ? ChessColor.BLACK : ChessColor.WHITE;
         if (getGameStatus() != GameStatus.ONGOING) {
@@ -254,8 +323,27 @@ public class GameLogic implements ChessGame {
             return GameStatus.DRAW;
         }
 
-        // 50 moves
         // repetition
+        // same position appears thrice in history
+        // includes piece position and possible moves
+        // i.e. have to account for castling and en passant rights
+        // board history can be reset when capturing or moving pawn
+        int samePositionCount = 1;
+        SimplifiedPosition currentPosition = boardHistory.getLast();
+        for (int i = boardHistory.size() - 2; i >= 0; i--) {
+            if (boardHistory.get(i) == currentPosition) {
+                samePositionCount++;
+            }
+        }
+        if (samePositionCount >= 3) {
+            return GameStatus.DRAW;
+        }
+
+        // 50 moves
+        // 100 moves total
+        if (boardHistory.size() > 100) {
+            return GameStatus.DRAW;
+        }
 
         if (!anyMovesLeft(ChessColor.WHITE)) {
             if (inCheck(ChessColor.WHITE)) {
@@ -274,8 +362,6 @@ public class GameLogic implements ChessGame {
 
         return GameStatus.ONGOING;
     }
-
-
 
     public boolean inCheck(ChessColor player) {
         ChessColor enemy = (player == ChessColor.WHITE) ? ChessColor.BLACK : ChessColor.WHITE;

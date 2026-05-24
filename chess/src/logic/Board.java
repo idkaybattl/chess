@@ -243,8 +243,16 @@ public class Board {
         }
     }
 
-    //public SimplePiece[][] simplifyBoard() {
-    //    SimplePiece[][] board = new SimplePiece[8][8];
-    //    return board;
-    //}
+    public SimplePiece[][] simplifyBoard() {
+        SimplePiece[][] board = new SimplePiece[8][8];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Optional<Piece> optionalPiece = squares[i][j].getPiece();
+                board[i][j] = optionalPiece
+                        .map(piece -> new SimplePiece(piece.getClass(), piece.getColor()))
+                        .orElse(null);
+            }
+        }
+        return board;
+    }
 }

@@ -93,7 +93,8 @@ public class UI extends JFrame {
         gamePanel.setAlignmentX(0.5f);
         gamePanel.setAlignmentY(0.5f);
 
-        gameOverScreen = new JPanel(new GridBagLayout());
+        gameOverScreen = new JPanel();
+        gameOverScreen.setLayout(new BoxLayout(gameOverScreen, BoxLayout.Y_AXIS));
         gameOverScreen.setBackground(new Color(100, 100, 100, 200));
         gameOverScreen.setAlignmentX(0.5f);
         gameOverScreen.setAlignmentY(0.5f);
@@ -101,9 +102,12 @@ public class UI extends JFrame {
 
         wonText = new JLabel();
         wonText.setFont(new Font("Sans-Serif", Font.BOLD, 36));
-        wonText.setHorizontalAlignment(JLabel.CENTER);
+        wonText.setAlignmentX(Component.CENTER_ALIGNMENT);
+        wonText.setAlignmentY(Component.CENTER_ALIGNMENT);
         restartButton = new JButton("PLAY AGAIN");
         restartButton.setFont(new Font("Sans-Serif", Font.BOLD, 14));
+        restartButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        restartButton.setAlignmentY(Component.CENTER_ALIGNMENT);
         restartButton.addActionListener(e -> restartGame());
 
         gameOverScreen.add(wonText);
@@ -210,12 +214,8 @@ public class UI extends JFrame {
             } else if (piece instanceof Pawn) {
                 button.setIcon(new ImageIcon(icons.get(color).get("pawn")));
             }
-
-            // button.setText(((piece.getColor() == ChessColor.WHITE) ? "W" : "B") +
-            // piece.getClass().getSimpleName());
         } else {
             button.setIcon(null);
-            // button.setText("");
         }
     }
 
