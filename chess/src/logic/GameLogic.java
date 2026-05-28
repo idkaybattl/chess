@@ -18,6 +18,7 @@ public class GameLogic implements ChessGame {
         moveHistory = new ArrayList<>();
         board = new Board();
         currentPlayer = ChessColor.WHITE;
+        boardHistory = new ArrayList<>();
         boardHistory.add(createSimplifiedPosition());
     }
 
@@ -148,7 +149,6 @@ public class GameLogic implements ChessGame {
     }
 
     private SimplifiedPosition createSimplifiedPosition() {
-        // TODO
         var whiteCastleMoves = getCastleMoves(ChessColor.WHITE);
         var blackCastleMoves = getCastleMoves(ChessColor.BLACK);
 
@@ -324,7 +324,6 @@ public class GameLogic implements ChessGame {
     }
 
     public GameStatus getGameStatus() {
-        // TODO:
         // Check for draws:
         // insufficient material
 
@@ -338,14 +337,16 @@ public class GameLogic implements ChessGame {
         // i.e. have to account for castling and en passant rights
         // board history can be reset when capturing or moving pawn
         int samePositionCount = 1;
-        SimplifiedPosition currentPosition = boardHistory.getLast();
-        for (int i = boardHistory.size() - 2; i >= 0; i--) {
-            if (boardHistory.get(i) == currentPosition) {
-                samePositionCount++;
+        if (boardHistory.size() > 0) {
+            SimplifiedPosition currentPosition = boardHistory.getLast();
+            for (int i = boardHistory.size() - 2; i >= 0; i--) {
+                if (boardHistory.get(i) == currentPosition) {
+                    samePositionCount++;
+                }
             }
-        }
-        if (samePositionCount >= 3) {
-            return GameStatus.DRAW;
+            if (samePositionCount >= 3) {
+                return GameStatus.DRAW;
+            }
         }
 
         // 50 moves

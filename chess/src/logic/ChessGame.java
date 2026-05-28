@@ -2,6 +2,7 @@ package logic;
 
 import java.util.Optional;
 import java.util.List;
+
 import logic.pieces.Piece;
 import logic.pieces.Promotable;
 import logic.pieces.Pawn;
