@@ -110,7 +110,8 @@ public class BoardLayer extends JPanel {
             updateBoard();
             if (moveResult == MoveResult.GAME_OVER) {
                 controller.gameOver();
-
+            } else if (moveResult == MoveResult.PROMOTION && selectedPiece instanceof Pawn) {
+                controller.startPromotion((Pawn) selectedPiece, selectedSquare, clicked);
             }
             return;
         }
@@ -186,5 +187,9 @@ public class BoardLayer extends JPanel {
         } else {
             button.setIcon(null);
         }
+    }
+
+    public EnumMap<ChessColor, HashMap<String, Image>> getIcons() {
+        return icons;
     }
 }

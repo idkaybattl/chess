@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import logic.*;
+import logic.pieces.Pawn;
 import logic.pieces.Piece;
+import logic.pieces.Promotable;
 
 public class Controller {
     private ChessGame logic;
@@ -51,5 +53,14 @@ public class Controller {
     public List<Location> availableMoves(Piece piece) {
         // TODO conversion
         return logic.availableMoves(piece);
+    }
+
+    public void startPromotion(Pawn pawn, Location origin, Location target) {
+        screenManager.getGamePanel().startPromotion(pawn, origin, target);
+    }
+
+    public void promote(Pawn pawn, Location origin, Location target, Class<? extends Promotable> type) {
+        logic.promote(pawn, origin, target, type);
+        screenManager.getGamePanel().closePromotion();
     }
 }

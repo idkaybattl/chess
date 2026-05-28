@@ -5,6 +5,8 @@ import java.awt.GridBagLayout;
 import javax.swing.*;
 
 import logic.GameStatus;
+import logic.Location;
+import logic.pieces.Pawn;
 import ui.Controller;
 import ui.screens.components.*;
 
@@ -57,5 +59,13 @@ public class GamePanel extends JPanel {
     public void startNewGame() {
         gameOverOverlay.setVisible(false);
         boardPanel.updateBoard();
+    }
+
+    public void startPromotion(Pawn pawn, Location origin, Location target) {
+        boardPanel.startPromotion(pawn, origin, target);
+    }
+
+    public void closePromotion() {
+        boardPanel.closePromotion();
     }
 }
