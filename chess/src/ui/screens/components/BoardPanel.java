@@ -27,6 +27,9 @@ public class BoardPanel extends JLayeredPane {
     @Override
     public void doLayout() {
         boardLayer.setBounds(0, 0, getWidth(), getHeight());
+        if (promotionLayer != null) {
+            promotionLayer.setBounds(0, 0, getWidth(), getHeight());
+        }
     }
 
     public void updateBoard() {
@@ -34,13 +37,26 @@ public class BoardPanel extends JLayeredPane {
     }
 
     public void startPromotion(Pawn pawn, Location origin, Location target) {
-        PromotionLayer promotionLayer = new PromotionLayer(controller, origin, target, pawn, boardLayer.getIcons());
-        add("promotionLayer", promotionLayer);
+        if (promotionLayer != null) {
+            remove(promotionLayer);
+        }
+
+        promotionLayer = new PromotionLayer(controller, origin, target, pawn, boardLayer.getIcons());
+        add(promotionLayer, JLayeredPane.PALETTE_LAYER);
 
         promotionLayer.setBounds(0, 0, getWidth(), getHeight());
+        moveToFront(promotionLayer);
+        revalidate();
+        repaint();
     }
 
     public void closePromotion() {
-        remove(promotionLayer);
+        if (promotionLayer != null) {
+            remove(promotionLayer);
+            promotionLayer = null;
+            updateBoard();
+            revalidate();
+            repaint();
+        }
     }
 }

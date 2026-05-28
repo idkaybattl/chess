@@ -217,6 +217,8 @@ public class GameLogic implements ChessGame {
 
         boardHistory.add(createSimplifiedPosition());
 
+        currentPlayer = (currentPlayer == ChessColor.WHITE) ? ChessColor.BLACK : ChessColor.WHITE;
+
         return MoveResult.MOVED;
     }
 
@@ -242,7 +244,7 @@ public class GameLogic implements ChessGame {
 
         board.movePiece(piece, target, capturedLocation);
 
-        if (piece instanceof Pawn && (piece.getPos().getX() == 7 || piece.getPos().getX() == 0)) {
+        if (piece instanceof Pawn && (piece.getPos().getY() == 7 || piece.getPos().getY() == 0)) {
             return MoveResult.PROMOTION;
         }
 

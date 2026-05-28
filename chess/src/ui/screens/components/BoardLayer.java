@@ -105,13 +105,14 @@ public class BoardLayer extends JPanel {
 
         if (selectedSquare != null && highlightedMoves.contains(clicked)) {
             Piece selectedPiece = controller.getPieceAt(selectedSquare).orElseThrow();
+            Location origin = new Location(selectedSquare);
             moveResult = controller.movePiece(selectedPiece, clicked);
             clearSelection();
             updateBoard();
             if (moveResult == MoveResult.GAME_OVER) {
                 controller.gameOver();
             } else if (moveResult == MoveResult.PROMOTION && selectedPiece instanceof Pawn) {
-                controller.startPromotion((Pawn) selectedPiece, selectedSquare, clicked);
+                controller.startPromotion((Pawn) selectedPiece, origin, clicked);
             }
             return;
         }

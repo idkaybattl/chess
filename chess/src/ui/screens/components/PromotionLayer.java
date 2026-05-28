@@ -61,14 +61,19 @@ public class PromotionLayer extends JPanel {
         switch (type) {
             case "queen":
                 promotingClass = Queen.class;
+                break;
             case "rook":
                 promotingClass = Rook.class;
+                break;
             case "knight":
                 promotingClass = Knight.class;
+                break;
             case "bishop":
                 promotingClass = Bishop.class;
+                break;
             default:
                 promotingClass = Queen.class;
+                break;
         }
         controller.promote(pawn, origin, square, promotingClass);
     }
