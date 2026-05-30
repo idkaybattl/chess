@@ -74,10 +74,10 @@ public class BoardLayer extends JPanel {
                 int finalX = x;
                 int finalY = y;
                 button.addActionListener(e -> squareClicked(finalX, finalY));
-
-                add(squares[x][y]);
             }
         }
+
+        setUpBoardButtons(Rotation.NORTH);
     }
 
     private Image getIcon(ChessColor color, String iconName) {
@@ -192,5 +192,34 @@ public class BoardLayer extends JPanel {
 
     public EnumMap<ChessColor, HashMap<String, Image>> getIcons() {
         return icons;
+    }
+
+    public void setUpBoardButtons(Rotation rotation) {
+        removeAll();
+
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                JButton button;
+                switch (rotation) {
+                    case Rotation.NORTH: {
+                        button = squares[x][7 - y];
+                        break;
+                    }
+                    case Rotation.EAST: {
+                        button = squares[y][x];
+                        break;
+                    }
+                    case Rotation.SOUTH: {
+                        button = squares[7 - x][y];
+                        break;
+                    }
+                    default: {
+                        button = squares[7 - y][7 - x];
+                        break;
+                    }
+                }
+                add(button);
+            }
+        }
     }
 }
