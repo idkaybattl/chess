@@ -1,6 +1,5 @@
 package ui;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +20,10 @@ public class Controller {
 
     public Controller() {
         // TODO temporary to test stockfish
-        engine = new StockfishUCI(Controller.class.getResource("/stockfish").getPath(), 4000, 400);
+        // engine = new
+        // StockfishUCI(Controller.class.getResource("/stockfish").getPath(), 4000,
+        // 400);
+        engine = new RandomEngine();
     }
 
     public void setScreenManager(ScreenManager screenManager) {

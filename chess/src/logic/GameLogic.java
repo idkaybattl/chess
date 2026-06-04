@@ -407,8 +407,8 @@ public class GameLogic implements ChessGame {
         return board.getPiece(x, y);
     }
 
-    public Board getBoard() {
-        return board;
+    public ArrayList<Piece> getPieces(ChessColor player) {
+        return board.getPieces(player);
     }
 
     public String getUCIMoves() {

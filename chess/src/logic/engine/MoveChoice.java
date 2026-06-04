@@ -8,6 +8,12 @@ public class MoveChoice {
     private final Location target;
     private Class<? extends Promotable> promotion;
 
+    public MoveChoice(Location start, Location target, Class<? extends Promotable> promotion) {
+        this.start = start;
+        this.target = target;
+        this.promotion = promotion;
+    }
+
     public MoveChoice(String moveUCI) {
         this.start = new Location(moveUCI.substring(0, 2));
         this.target = new Location(moveUCI.substring(2, 4));

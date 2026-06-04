@@ -24,9 +24,9 @@ public interface ChessGame {
 
     Optional<Piece> getPieceAt(int x, int y);
 
-    Board getBoard();
-
     String getUCIMoves();
 
     ChessColor getCurrentPlayer();
+
+    List<Piece> getPieces(ChessColor player);
 }
