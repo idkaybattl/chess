@@ -23,7 +23,9 @@ public class Controller {
         // engine = new
         // StockfishUCI(Controller.class.getResource("/stockfish").getPath(), 4000,
         // 400);
-        engine = new RandomEngine();
+        // engine = new RandomEngine();
+
+        engine = new CompletelyRandomEngine();
     }
 
     public void setScreenManager(ScreenManager screenManager) {

@@ -234,11 +234,13 @@ public class GameLogic implements ChessGame {
         }
 
         ArrayList<Location> availableMoves = availableMoves(piece);
-        boolean allowedMove = availableMoves.contains(target);
-
-        if (!allowedMove) {
-            return MoveResult.ILLEGAL_MOVE;
-        }
+        /*
+         * boolean allowedMove = availableMoves.contains(target);
+         * 
+         * if (!allowedMove) {
+         * return MoveResult.ILLEGAL_MOVE;
+         * }
+         */
 
         Location origin = new Location(piece.getPos());
         Location capturedLocation = getCapturedLocation(piece, target);
