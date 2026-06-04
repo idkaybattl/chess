@@ -26,5 +26,7 @@ public interface ChessGame {
 
     Board getBoard();
 
+    String getUCIMoves();
+
     ChessColor getCurrentPlayer();
 }

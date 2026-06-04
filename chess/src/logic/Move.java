@@ -29,21 +29,21 @@ public class Move {
     private String promotionString() {
         if (promotion != null) {
             if (promotion == Queen.class) {
-                return "Q";
+                return "q";
             } else if (promotion == Rook.class) {
-                return "R";
+                return "r";
             } else if (promotion == Knight.class) {
-                return "K";
+                return "n";
             } else {
-                return "B";
+                return "b";
             }
         } else {
             return "";
         }
     }
 
-    public String algebraicNotation() {
-        return (start.algebraicNotation() + target.algebraicNotation() + promotionString());
+    public String uciNotation() {
+        return (start.uciNotation() + target.uciNotation() + promotionString());
     }
 
     public Location getStart() {

@@ -15,7 +15,14 @@ public class Location {
         this.y = other.y;
     }
 
-    public String algebraicNotation() {
+    public Location(String uciNotation) {
+        char xString = uciNotation.charAt(0);
+        char yString = uciNotation.charAt(1);
+        this.x = (int) xString - 97;
+        this.y = Character.getNumericValue(yString) - 1;
+    }
+
+    public String uciNotation() {
         return (String.valueOf((char) (97 + x)) + String.valueOf(y + 1));
     }
 

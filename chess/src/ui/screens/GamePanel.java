@@ -56,6 +56,10 @@ public class GamePanel extends JPanel {
 
     public void startNewGame() {
         gameOverOverlay.setVisible(false);
+        refresh();
+    }
+
+    public void refresh() {
         boardPanel.updateBoard();
     }
 

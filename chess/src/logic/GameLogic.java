@@ -1,5 +1,7 @@
 package logic;
 
+import java.lang.StringBuilder;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
@@ -407,6 +409,17 @@ public class GameLogic implements ChessGame {
 
     public Board getBoard() {
         return board;
+    }
+
+    public String getUCIMoves() {
+        StringBuilder moves = new StringBuilder();
+        for (Move move : moveHistory) {
+            if (moves.length() > 0) {
+                moves.append(" ");
+            }
+            moves.append(move.uciNotation());
+        }
+        return moves.toString();
     }
 
     public ChessColor getCurrentPlayer() {
