@@ -10,34 +10,52 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import ui.Controller;
+import logic.GameStatus;
 
 public class GameOverOverlay extends JPanel {
-    private Controller controller;
 
-    private JLabel wonText;
+    private JLabel gameOverText;
     private JButton restartButton;
 
     public GameOverOverlay(Controller controller) {
         super();
 
-        this.controller = controller;
-
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBackground(new Color(100, 100, 100, 200));
-        setAlignmentX(0.5f);
-        setAlignmentY(0.5f);
+        setBackground(new Color(100, 100, 100, 100));
 
-        wonText = new JLabel();
-        wonText.setFont(new Font("Sans-Serif", Font.BOLD, 36));
-        wonText.setAlignmentX(Component.CENTER_ALIGNMENT);
-        wonText.setAlignmentY(Component.CENTER_ALIGNMENT);
+        gameOverText = new JLabel();
+        gameOverText.setFont(new Font("Sans-Serif", Font.BOLD, 36));
+        gameOverText.setAlignmentX(Component.CENTER_ALIGNMENT);
+        gameOverText.setAlignmentY(Component.CENTER_ALIGNMENT);
         restartButton = new JButton("PLAY AGAIN");
         restartButton.setFont(new Font("Sans-Serif", Font.BOLD, 14));
+        restartButton.setBorderPainted(false);
         restartButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         restartButton.setAlignmentY(Component.CENTER_ALIGNMENT);
         restartButton.addActionListener(e -> controller.startNewGame());
 
-        add(wonText);
+        add(gameOverText);
         add(restartButton);
+    }
+
+    public void gameOver(GameStatus gameStatus) {
+        switch (gameStatus) {
+            case BLACK: {
+                gameOverText.setText("Black won!");
+                break;
+            }
+            case WHITE: {
+                gameOverText.setText("White won!");
+                break;
+            }
+            case DRAW: {
+                gameOverText.setText("Game ended in a draw");
+                break;
+            }
+            default: {
+                gameOverText.setText("game ended.");
+                break;
+            }
+        }
     }
 }

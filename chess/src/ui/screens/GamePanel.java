@@ -11,7 +11,6 @@ import ui.Controller;
 import ui.screens.components.*;
 
 public class GamePanel extends JPanel {
-    private Controller controller;
 
     private JLayeredPane layeredPane;
 
@@ -20,8 +19,6 @@ public class GamePanel extends JPanel {
 
     public GamePanel(Controller controller) {
         super(new GridBagLayout());
-
-        this.controller = controller;
 
         boardPanel = new BoardPanel(controller);
         gameOverOverlay = new GameOverOverlay(controller);
@@ -54,6 +51,7 @@ public class GamePanel extends JPanel {
 
     public void gameOver(GameStatus gameStatus) {
         gameOverOverlay.setVisible(true);
+        gameOverOverlay.gameOver(gameStatus);
     }
 
     public void startNewGame() {

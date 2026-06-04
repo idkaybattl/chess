@@ -2,13 +2,11 @@ package ui.screens.components;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Optional;
@@ -56,10 +54,7 @@ public class BoardLayer extends JPanel {
         // board
         squares = new JButton[8][8];
 
-        // weird loop to appease grid layout
-        // start adding from top left to bottom right
-        // -> first one has to be a8 -> y=7, x = 0
-        for (int y = 7; y >= 0; y--) {
+        for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 JButton button = new JButton();
                 squares[x][y] = button;
@@ -71,6 +66,7 @@ public class BoardLayer extends JPanel {
                 boolean light = (x + y) % 2 == 0;
                 button.setBackground(light ? Color.DARK_GRAY : Color.LIGHT_GRAY);
 
+                // final values needed for lambda since x and y are still going to change
                 int finalX = x;
                 int finalY = y;
                 button.addActionListener(e -> squareClicked(finalX, finalY));
