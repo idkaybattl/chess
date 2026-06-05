@@ -2,4 +2,5 @@
 /**/*.kra
 /**/*.kra~
 /**/*.png~
-/src/stockfish
+/src/stockfish*
+/src/package.bluej
